@@ -1,13 +1,8 @@
 import React, { useState } from "react";
 
-// ICONS
 const ICONS = {
   linkedin: "https://cdn-icons-png.flaticon.com/24/174/174857.png",
-  phone: "https://i.postimg.cc/SN3tSSmB/phone.png",
-  location: "https://i.postimg.cc/CMvQ2CXL/location.png",
-  website: "https://i.postimg.cc/XqvDJXGb/internet.png",
-  facebook: "https://i.postimg.cc/9FrnHRHP/facebook.png",
-  linkedinCompany: "https://i.postimg.cc/gjBt6d86/linkedin.png",
+  outlook: "https://cdn-icons-png.flaticon.com/128/732/732223.png", // Outlook
   banner: "https://i.postimg.cc/L60S3Tyy/inspiria-signature.png",
   logo: "https://i.postimg.cc/dVq5SbJX/Inspiria-Logo.png",
 };
@@ -15,143 +10,148 @@ const ICONS = {
 const LABELS = {
   he: {
     lang: "עברית",
-    title: "מחולל חתימות אינספיריה",
-    subtitle: "מייצרים חתימות מייל מעוצבות לכל עובדי אינספיריה",
     name: "שם מלא",
     role: "תפקיד",
     email: "כתובת דוא\"ל",
     hasPhone: "להוסיף טלפון אישי?",
     phone: "טלפון אישי",
     ext: "מספר שלוחה",
-    wantLinkedin: "הוספת לינקדאין?",
-    linkedin: "קישור אישי ללינקדאין",
+    hasLinkedin: "להוסיף לינקדאין אישי?",
+    linkedin: "קישור לינקדאין אישי",
+    hasGreeting: "להוסיף ברכה אישית?",
+    greeting: "בברכה,\nניב שנדל",
+    greeting_placeholder: "בברכה,\nשם העובד\n—\nשיהיה יום נהדר!",
     generate: "צור חתימה",
     copy: "העתק חתימה",
     preview: "תצוגה מקדימה",
-    outlook: "הוספת החתימה לאאוטלוק",
+    workingHours: "שעות פעילות: א'-ה' 09:00–17:30",
+    signature_he: "חתימה בעברית",
+    signature_en: "חתימה באנגלית",
+    outlook: "איך להגדיר חתימה באאוטלוק?",
+    howTo: `1. לחץ "העתק חתימה"\n2. עבור לאאוטלוק > קובץ > אפשרויות > דואר > חתימות\n3. הדבק את החתימה החדשה ולחץ שמור`,
+    toOutlook: "מעבר לאאוטלוק",
     close: "סגור",
-    howTo: "להוספת החתימה לאאוטלוק:\n1. העתק את החתימה\n2. עבור לאאוטלוק > קובץ > אפשרויות > דואר > חתימות\n3. הדבק וערוך במידת הצורך",
-    signatureTab: "חתימה בעברית",
-    signatureTabEN: "חתימה באנגלית",
-    extensionPH: "שלוחה (לא חובה)",
-    system: "מערכת",
-    light: "בהיר",
-    dark: "כהה"
+    linkedin_placeholder: "לינק לפרופיל (למשל: https://linkedin.com/in/you)"
   },
   en: {
     lang: "English",
-    title: "Inspiria Signature Generator",
-    subtitle: "Create branded email signatures for all Inspiria employees",
     name: "Full Name",
-    role: "Role/Position",
+    role: "Role",
     email: "Email Address",
-    hasPhone: "Add private phone?",
+    hasPhone: "Add Private Phone?",
     phone: "Private Phone",
     ext: "Extension",
-    wantLinkedin: "Add LinkedIn?",
-    linkedin: "Personal LinkedIn Link",
+    hasLinkedin: "Add Personal LinkedIn?",
+    linkedin: "Personal LinkedIn URL",
+    hasGreeting: "Add Greeting?",
+    greeting: "Best regards,\nNiv Schendel",
+    greeting_placeholder: "Best regards,\nYour Name\n—\nHave a great day!",
     generate: "Generate Signature",
     copy: "Copy Signature",
     preview: "Preview",
-    outlook: "Add Signature to Outlook",
+    workingHours: "Working hours: Sun-Thu 09:00–17:30",
+    signature_he: "Hebrew Signature",
+    signature_en: "English Signature",
+    outlook: "How to set signature in Outlook?",
+    howTo: `1. Click "Copy Signature"\n2. Go to Outlook > File > Options > Mail > Signatures\n3. Paste the signature and save`,
+    toOutlook: "Go to Outlook",
     close: "Close",
-    howTo: "To add signature in Outlook:\n1. Copy the signature\n2. Go to Outlook > File > Options > Mail > Signatures\n3. Paste and edit if needed",
-    signatureTab: "Hebrew Signature",
-    signatureTabEN: "English Signature",
-    extensionPH: "Extension (optional)",
-    system: "System",
-    light: "Light",
-    dark: "Dark"
+    linkedin_placeholder: "Profile link (e.g.: https://linkedin.com/in/you)"
   }
 };
 
-// Build signature HTML
-function buildSignature({ lang, name, role, email, phone, ext, linkedin, signatureLang }) {
-  const isHeb = signatureLang === "he";
+function buildSignature({ lang, name, role, email, phone, ext, linkedin, greeting }) {
+  const isHeb = lang === "he";
+  const workHours = isHeb ? LABELS.he.workingHours : LABELS.en.workingHours;
   return `
-<table dir="${isHeb ? "rtl" : "ltr"}" style="font-family:Arial,sans-serif;font-size:14px;color:#000;text-align:${isHeb ? "right" : "left"};direction:${isHeb ? "rtl" : "ltr"};line-height:1.6;" cellspacing="0" cellpadding="0">
-  <tr>
-    <td style="padding-bottom:8px;">
-      <span style="font-size:17px;font-weight:bold;color:#1a237e;">${name || (isHeb ? "שם מלא" : "Full Name")}</span>
-      ${linkedin ? `
-        <a href="${linkedin}" target="_blank" style="${isHeb ? "margin-right" : "margin-left"}:6px;vertical-align:middle;">
-          <img src="${ICONS.linkedin}" alt="LinkedIn" style="height:18px;width:18px;">
+  <table dir="${isHeb ? "rtl" : "ltr"}" style="font-family:Arial,sans-serif; font-size:14px; color:#222; text-align:${isHeb ? "right" : "left"}; direction:${isHeb ? "rtl" : "ltr"}; line-height:1.6; width:500px;">
+    <tr>
+      <td style="padding-bottom:8px;">
+        <span style="font-size:17px; font-weight:bold; color:#1a237e;">${name || (isHeb ? "שם מלא" : "Full Name")}</span>
+        ${linkedin ? `<a href="${linkedin}" target="_blank" style="${isHeb ? "margin-right" : "margin-left"}:6px; vertical-align:middle;"><img src="${ICONS.linkedin}" alt="LinkedIn" style="height:18px; width:18px;"></a>` : ""}
+        <div style="color:#0044cc; font-size:15px;">${role || (isHeb ? "תפקיד" : "Role")}</div>
+        <a href="mailto:${email}" style="color:#000; text-decoration:none;">${email}</a>
+        ${phone ? ` | <a href="tel:${phone}" style="color:#000; text-decoration:none;">${phone}</a>` : ""}
+      </td>
+    </tr>
+    <tr>
+      <td style="padding-bottom:3px;">
+        <span style="vertical-align:middle;">
+          <b>${isHeb ? "שלוחה" : "Ext."}</b> ${ext || "-"}
+        </span>
+      </td>
+    </tr>
+    <tr>
+      <td style="color:#888; font-size:13px; padding-bottom:2px;">
+        ${workHours}
+      </td>
+    </tr>
+    <tr>
+      <td style="padding-bottom:6px;">
+        <a href="https://www.inspiria.co.il/" target="_blank">
+          <img src="${ICONS.banner}" alt="Inspiria - אינספיריה" style="display:block;" width="210" height="auto">
         </a>
-      ` : ""}
-      <div style="color:#0044cc;font-size:15px;">${role || (isHeb ? "תפקיד" : "Role/Position")}</div>
-      <a href="mailto:${email}" style="color:#000;text-decoration:none;">${email}</a>
-      ${phone ? ` | <a href="tel:${phone}" style="color:#000;text-decoration:none;">${phone}</a>` : ""}
-    </td>
-  </tr>
-  <tr>
-    <td style="padding-bottom:5px;">
-      <span style="vertical-align:middle;">
-        <img src="${ICONS.phone}" alt="${isHeb ? "טלפון משרד" : "Office Phone"}" style="height:16px;width:16px;vertical-align:middle;margin-${isHeb ? "left" : "right"}:4px;">
-        03-3743555${ext ? `, ${isHeb ? "שלוחה" : "Ext."} ${ext}` : ""}
-      </span>
-    </td>
-  </tr>
-  <tr>
-    <td style="padding-bottom:6px;">
-      <a href="https://www.inspiria.co.il/" target="_blank">
-        <img src="${ICONS.banner}" alt="Inspiria - אינספיריה" style="display:block;" width="210" height="auto">
-      </a>
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <a style="margin-${isHeb ? "left" : "right"}:6px;" href="https://www.google.com/maps/search/?api=1&query=${isHeb ? "בנין+T,+Totseret+ha-Arets+St+3,+Petah+Tikva,+4951734" : "Building+T,+Totseret+ha-Arets+St+3,+Petah+Tikva,+4951734"}" target="_blank">
-        <img style="height:32px;width:32px;" src="${ICONS.location}" alt="Location"/>
-      </a>
-      <a style="margin-${isHeb ? "left" : "right"}:6px;" href="https://www.inspiria.co.il/" target="_blank">
-        <img style="height:32px;width:32px;" src="${ICONS.website}" alt="Website"/>
-      </a>
-      <a style="margin-${isHeb ? "left" : "right"}:6px;" href="https://www.facebook.com/InspiriaExperts" target="_blank">
-        <img style="height:32px;width:32px;" src="${ICONS.facebook}" alt="Facebook"/>
-      </a>
-      <a href="https://www.linkedin.com/company/inspiria-sap-b1-experts/" target="_blank">
-        <img style="height:32px;width:32px;" src="${ICONS.linkedinCompany}" alt="LinkedIn"/>
-      </a>
-    </td>
-  </tr>
-</table>
-`.replace(/\s{2,}/g, " ");
+      </td>
+    </tr>
+    <tr>
+      <td style="font-size:13px; color:#223; white-space:pre-line;">
+        ${greeting ? greeting : ""}
+      </td>
+    </tr>
+  </table>
+  `.replace(/\s{2,}/g, " ");
 }
 
 export default function SignatureApp() {
-  // State
+  // --- State variables ---
   const [lang, setLang] = useState("he");
-  const [signatureLang, setSignatureLang] = useState("he");
   const [name, setName] = useState("");
   const [role, setRole] = useState("");
   const [email, setEmail] = useState("");
   const [showPhone, setShowPhone] = useState(false);
   const [phone, setPhone] = useState("");
   const [ext, setExt] = useState("");
-  const [wantLinkedin, setWantLinkedin] = useState(false);
+  const [showLinkedin, setShowLinkedin] = useState(false);
   const [linkedin, setLinkedin] = useState("");
+  const [showGreeting, setShowGreeting] = useState(false);
+  const [greeting, setGreeting] = useState("");
   const [signature, setSignature] = useState("");
+  const [tab, setTab] = useState("he"); // "he" or "en"
   const [showPopup, setShowPopup] = useState(false);
+  const [mode, setMode] = useState(localStorage.getItem("color-mode") || "system");
+
+  // --- Labels ---
   const L = LABELS[lang];
 
-  // Generate signature
+  // --- Mode change handler ---
+  React.useEffect(() => {
+    function applyMode(mode) {
+      if (mode === "light") document.body.classList.add("light-mode");
+      else document.body.classList.remove("light-mode");
+    }
+    if (mode === "system") {
+      const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+      applyMode(prefersLight ? "light" : "dark");
+    } else {
+      applyMode(mode);
+    }
+    localStorage.setItem("color-mode", mode);
+  }, [mode]);
+
+  // --- Generate signature handler ---
   function handleGenerate(e) {
     e.preventDefault();
-    setSignature(
-      buildSignature({
-        lang,
-        name,
-        role,
-        email,
-        phone: showPhone && phone ? phone : "",
-        ext,
-        linkedin: wantLinkedin ? linkedin : "",
-        signatureLang
-      })
-    );
+    setSignature(buildSignature({
+      lang: tab,
+      name, role, email,
+      phone: showPhone ? phone : "",
+      ext,
+      linkedin: showLinkedin ? linkedin : "",
+      greeting: showGreeting ? (greeting || L.greeting) : "",
+    }));
   }
 
-  // Copy to clipboard
+  // --- Copy signature (html) ---
   function handleCopy() {
     if (!signature) return;
     const el = document.createElement("textarea");
@@ -163,161 +163,195 @@ export default function SignatureApp() {
     alert(lang === "he" ? "החתימה הועתקה!" : "Signature copied!");
   }
 
-  // Main UI
+  // --- UI ---
   return (
     <div
-      dir="rtl"
       style={{
         minHeight: "100vh",
-        background: "#232730 url('https://i.postimg.cc/dVq5SbJX/Inspiria-Logo.png') no-repeat 50vw 12vh",
-        backgroundSize: "330px",
-        paddingTop: 0,
-        fontFamily: "Segoe UI, Arial, sans-serif"
+        margin: 0,
+        padding: 0,
+        background: "#23272e",
+        backgroundImage: `url(${ICONS.logo})`,
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "top left",
+        backgroundSize: "300px auto",
+        display: "flex",
+        alignItems: "flex-start",
+        justifyContent: "center"
       }}
     >
-      <div style={{
-        maxWidth: 1000, minWidth: 420, margin: "46px auto 0 auto", borderRadius: 28,
-        background: "#23272eF2", boxShadow: "0 8px 48px #0005", padding: "46px 50px 38px 50px", position: "relative"
-      }}>
-        {/* לוגו ושורת כותרת */}
-        <div style={{ display: "flex", alignItems: "center", marginBottom: 18, gap: 17 }}>
-          <img src={ICONS.logo} alt="Inspiria Logo" style={{ height: 64, width: "auto", marginInlineEnd: 16 }} />
-          <div>
-            <div style={{ fontSize: 26, fontWeight: 800, color: "#256be9", marginBottom: 0 }}>
-              {L.title}
-            </div>
-            <div style={{
-              fontSize: 15.6, fontWeight: 400, color: "#e4e7ef",
-              letterSpacing: ".03em", marginTop: 2, marginBottom: 0
-            }}>
-              {L.subtitle}
-            </div>
-          </div>
+      {/* מצב תצוגה */}
+      <div style={{ position: "fixed", top: 20, right: 44, zIndex: 3 }}>
+        <select value={mode} onChange={e => setMode(e.target.value)}
+          style={{
+            background: "#292e37", color: "#8bb8f9", fontWeight: 600, fontSize: "1.04em",
+            borderRadius: 15, border: "1.2px solid #395", padding: "8px 18px"
+          }}>
+          <option value="dark">🌙 כהה</option>
+          <option value="light">🌞 בהיר</option>
+          <option value="system">🖥️ מערכת</option>
+        </select>
+      </div>
+      {/* טופס */}
+      <div
+        style={{
+          width: "100%",
+          maxWidth: 1050,
+          minHeight: 420,
+          margin: "60px auto 0 auto",
+          borderRadius: 26,
+          boxShadow: "0 10px 54px #0004",
+          padding: "40px 58px 36px 58px",
+          background: "#23262e",
+          display: "flex",
+          flexDirection: "column",
+          gap: 18,
+          alignItems: "center",
+          position: "relative"
+        }}
+      >
+        {/* לוגו וכותרת */}
+        <div style={{ textAlign: "center", marginBottom: 12 }}>
+          <img src={ICONS.logo} alt="Inspiria" style={{ height: 60, marginBottom: 3 }} />
+          <div style={{ fontWeight: 800, fontSize: 26, color: "#2583d1", marginTop: 0 }}>מחולל חתימות אינספיריה</div>
+          <div style={{ color: "#c3e0ff", fontSize: 17, marginBottom: 6 }}>מייצרים חתימות מייל מעוצבות לכל עובדי אינספיריה</div>
         </div>
-        {/* טאבס של חתימה */}
+        {/* לשוניות חתימה */}
+        <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
+          <button
+            className={tab === "he" ? "tab-active" : ""}
+            style={{
+              padding: "10px 28px",
+              background: tab === "he" ? "#2964e0" : "#272b32",
+              color: tab === "he" ? "#fff" : "#8bb8f9",
+              borderRadius: "13px 13px 0 0",
+              fontSize: 18,
+              fontWeight: 700,
+              border: "none",
+              cursor: "pointer"
+            }}
+            onClick={() => { setTab("he"); setLang("he"); }}
+          >חתימה בעברית</button>
+          <button
+            className={tab === "en" ? "tab-active" : ""}
+            style={{
+              padding: "10px 28px",
+              background: tab === "en" ? "#2964e0" : "#272b32",
+              color: tab === "en" ? "#fff" : "#8bb8f9",
+              borderRadius: "13px 13px 0 0",
+              fontSize: 18,
+              fontWeight: 700,
+              border: "none",
+              cursor: "pointer"
+            }}
+            onClick={() => { setTab("en"); setLang("en"); }}
+          >חתימה באנגלית</button>
+        </div>
+        {/* שדות שורה 1 */}
         <div style={{
-          display: "flex", gap: 3, marginBottom: 23, marginTop: 3
+          display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 18, width: "100%", marginBottom: 10
         }}>
-          <button
-            onClick={() => setSignatureLang("he")}
-            style={{
-              background: signatureLang === "he" ? "#2964e0" : "#1e2227",
-              color: signatureLang === "he" ? "#fff" : "#8bb8f9",
-              border: "none", borderRadius: "13px 13px 0 0",
-              padding: "11px 42px", fontSize: "1.15em", fontWeight: 500, cursor: "pointer"
-            }}
-          >
-            {L.signatureTab}
-          </button>
-          <button
-            onClick={() => setSignatureLang("en")}
-            style={{
-              background: signatureLang === "en" ? "#2964e0" : "#1e2227",
-              color: signatureLang === "en" ? "#fff" : "#8bb8f9",
-              border: "none", borderRadius: "13px 13px 0 0",
-              padding: "11px 42px", fontSize: "1.15em", fontWeight: 500, cursor: "pointer"
-            }}
-          >
-            {L.signatureTabEN}
-          </button>
+          <div>
+            <label style={labelStyle()}>{L.name}:</label>
+            <input style={inputStyle()} value={name} onChange={e => setName(e.target.value)} required />
+          </div>
+          <div>
+            <label style={labelStyle()}>{L.role}:</label>
+            <input style={inputStyle()} value={role} onChange={e => setRole(e.target.value)} required />
+          </div>
+          <div>
+            <label style={labelStyle()}>{L.email}:</label>
+            <input style={inputStyle()} type="email" value={email} onChange={e => setEmail(e.target.value)} required />
+          </div>
         </div>
-        {/* טופס פרטים */}
-        <form onSubmit={handleGenerate} style={{
-          display: "flex", flexDirection: "column", gap: 0, alignItems: "stretch"
+        {/* שדות שורה 2 */}
+        <div style={{
+          display: "grid", gridTemplateColumns: "1.2fr 1.2fr 1fr", gap: 18, width: "100%", marginBottom: 8
         }}>
-          <div style={{
-            display: "flex", flexWrap: "wrap", gap: 19, marginBottom: 12
-          }}>
-            <div style={{ flex: "1 1 240px", minWidth: 160 }}>
-              <label style={labelStyle("he")}>{L.name}:</label>
-              <input style={inputStyle("he")} value={name} onChange={e => setName(e.target.value)} required />
-            </div>
-            <div style={{ flex: "1 1 240px", minWidth: 160 }}>
-              <label style={labelStyle("he")}>{L.role}:</label>
-              <input style={inputStyle("he")} value={role} onChange={e => setRole(e.target.value)} required />
-            </div>
-            <div style={{ flex: "1 1 180px", minWidth: 130 }}>
-              <label style={labelStyle("he")}>{L.email}:</label>
-              <input style={inputStyle("he")} type="email" value={email} onChange={e => setEmail(e.target.value)} required />
-            </div>
-            <div style={{ flex: "1 1 125px", minWidth: 90, display: "flex", alignItems: "center", gap: 6 }}>
-              <input type="checkbox" checked={showPhone} onChange={() => setShowPhone(!showPhone)} style={{ margin: 0 }} id="showphone" />
-              <label htmlFor="showphone" style={labelStyle("he")}>{L.hasPhone}</label>
-              {showPhone && (
-                <input style={{ ...inputStyle("he"), width: 102 }} value={phone} onChange={e => setPhone(e.target.value)} placeholder="05x-xxxxxxx" />
-              )}
-            </div>
-            <div style={{ flex: "1 1 110px", minWidth: 80 }}>
-              <label style={labelStyle("he")}>{L.ext}:</label>
-              <input style={inputStyle("he")} value={ext} onChange={e => setExt(e.target.value)} placeholder={L.extensionPH} />
-            </div>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <input type="checkbox" checked={showPhone} onChange={() => setShowPhone(x => !x)} style={{ marginLeft: 6 }} />
+            <label style={labelStyle()}>{L.hasPhone}</label>
+            <input style={{ ...inputStyle(), marginRight: 10, width: 120 }} value={phone} onChange={e => setPhone(e.target.value)} placeholder="05x-xxxxxxx" disabled={!showPhone} />
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 14 }}>
-            <input type="checkbox" checked={wantLinkedin} onChange={() => setWantLinkedin(!wantLinkedin)} id="wantLinkedin" />
-            <label htmlFor="wantLinkedin" style={labelStyle("he")}>{L.wantLinkedin}</label>
-            {wantLinkedin && (
-              <>
-                <input style={{ ...inputStyle("he"), width: 235 }} value={linkedin} onChange={e => setLinkedin(e.target.value)} placeholder="https://linkedin.com/in/..." />
-                <img src={ICONS.linkedin} alt="LinkedIn" style={{ width: 18, height: 18, marginInlineStart: 4 }} />
-              </>
-            )}
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <input type="checkbox" checked={showLinkedin} onChange={() => setShowLinkedin(x => !x)} style={{ marginLeft: 6 }} />
+            <label style={labelStyle()}>{L.hasLinkedin}</label>
+            <input style={{ ...inputStyle(), marginRight: 10, width: 210 }} value={linkedin} onChange={e => setLinkedin(e.target.value)} placeholder={L.linkedin_placeholder} disabled={!showLinkedin} />
+            {/* לוגו לינקדאין מוביל לעמוד הבית אם ריק */}
+            <a href={linkedin ? linkedin : "https://linkedin.com/"} target="_blank" rel="noopener noreferrer">
+              <img src={ICONS.linkedin} alt="LinkedIn" style={{ height: 18, width: 18, marginLeft: 8 }} />
+            </a>
           </div>
-          <button type="submit" style={{
-            background: "#2964e0", color: "#fff", padding: "14px 36px",
-            borderRadius: 22, border: "none", fontSize: "1.19em", fontWeight: 600,
-            marginTop: 2, cursor: "pointer", boxShadow: "0 2px 6px #2461", letterSpacing: "0.02em", alignSelf: "flex-start"
-          }}>
-            {L.generate}
-          </button>
-        </form>
-        {/* תצוגת חתימה, כפתור העתקה, פופאפ אאוטלוק */}
+          <div>
+            <label style={labelStyle()}>{L.ext}:</label>
+            <input style={inputStyle()} value={ext} onChange={e => setExt(e.target.value)} placeholder={tab === "he" ? "שלוחה (לא חובה)" : "Extension (optional)"} />
+          </div>
+        </div>
+        {/* שורה 3 – ברכה */}
+        <div style={{
+          display: "flex", alignItems: "center", width: "100%", marginBottom: 14
+        }}>
+          <input type="checkbox" checked={showGreeting} onChange={() => setShowGreeting(x => !x)} style={{ marginLeft: 6 }} />
+          <label style={labelStyle()}>{L.hasGreeting}</label>
+          <textarea
+            style={{ ...inputStyle(), marginRight: 10, width: 350, minHeight: 38, fontSize: "1.05em" }}
+            placeholder={L.greeting_placeholder}
+            value={greeting}
+            onChange={e => setGreeting(e.target.value)}
+            disabled={!showGreeting}
+          />
+        </div>
+        {/* כפתור יצירת חתימה */}
+        <button type="submit" onClick={handleGenerate}
+          style={{
+            background: "#2964e0", color: "#fff", fontWeight: 700, fontSize: "1.13em",
+            padding: "12px 44px", borderRadius: 22, marginTop: 5, marginBottom: 3, border: "none", cursor: "pointer"
+          }}>{L.generate}</button>
+        {/* תצוגה/העתקה */}
         {signature && (
           <div style={{
-            marginTop: 26, background: "#282e39", borderRadius: 17, padding: "20px 18px 18px 18px", boxShadow: "0 2px 12px #0002"
+            width: "100%", marginTop: 15, borderRadius: 15, background: "#fafcff", padding: 14
           }}>
-            <div style={{
-              display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6
-            }}>
-              <span style={{ fontWeight: 700, fontSize: "1.08em", color: "#2265b9" }}>{L.preview}:</span>
-              <div style={{ display: "flex", gap: 11 }}>
-                <button onClick={handleCopy} style={{
-                  background: "#2964e0", color: "#fff", padding: "8px 21px",
-                  borderRadius: 14, fontSize: "1em", border: "none", cursor: "pointer", fontWeight: 500
-                }}>{L.copy}</button>
-                <button onClick={e => { e.preventDefault(); setShowPopup(true); }} style={{
-                  background: "#3f4b5a", color: "#fff", padding: "8px 17px", borderRadius: 14, fontSize: "1em",
-                  border: "none", cursor: "pointer", fontWeight: 500
-                }}>{L.outlook}</button>
-              </div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 3 }}>
+              <span style={{ fontWeight: 700 }}>{L.preview}:</span>
+              <span>
+                <button onClick={handleCopy}
+                  style={{ background: "#d6e8fd", color: "#2964e0", border: "none", borderRadius: 11, fontWeight: 700, padding: "5px 16px", fontSize: "1em", marginLeft: 8 }}>{L.copy}</button>
+                <button onClick={() => setShowPopup(true)}
+                  style={{ background: "#e7e7f7", color: "#1157bb", border: "none", borderRadius: 11, fontWeight: 700, padding: "5px 16px", fontSize: "1em" }}>
+                  <img src={ICONS.outlook} alt="Outlook" style={{ height: 18, verticalAlign: "middle", marginRight: 5 }} />
+                  {L.outlook}
+                </button>
+              </span>
             </div>
-            <div className="sig-html" style={{
-              border: "1.5px solid #b0c5ee55", borderRadius: 8, background: "#fff",
-              color: "#222", padding: "15px 14px 12px 14px", marginBottom: 8, overflowX: "auto", direction: signatureLang === "he" ? "rtl" : "ltr"
-            }} dangerouslySetInnerHTML={{ __html: signature }} />
+            <div className="preview-box" style={{ border: "1.5px solid #bce", borderRadius: 8, padding: 10, background: "#fff" }}
+              dangerouslySetInnerHTML={{ __html: signature }} />
           </div>
         )}
-        {/* פופאפ אאוטלוק */}
+        {/* פופאפ הדרכה לאאוטלוק */}
         {showPopup && (
           <div style={{
             position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh",
-            background: "#0009", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100
+            background: "#0009", zIndex: 9, display: "flex", alignItems: "center", justifyContent: "center"
           }}>
             <div style={{
-              background: "#fff", color: "#223", borderRadius: 22, padding: "32px 36px", boxShadow: "0 3px 14px #2327",
-              minWidth: 320, maxWidth: "90vw", textAlign: "center", fontSize: "1.15em"
+              width: 380, background: "#fff", borderRadius: 20, boxShadow: "0 8px 40px #0007",
+              padding: 36, display: "flex", flexDirection: "column", alignItems: "center"
             }}>
-              <div style={{ fontWeight: 700, fontSize: "1.08em", marginBottom: 15 }}>{L.outlook}</div>
-              <div style={{ whiteSpace: "pre-line", marginBottom: 18, color: "#222" }}>{L.howTo}</div>
-              <a href="outlook:///" target="_blank" rel="noopener noreferrer" style={{
-                color: "#2964e0", fontWeight: 700, fontSize: "1.13em"
-              }}>
-                מעבר לאאוטלוק
+              <img src={ICONS.outlook} alt="Outlook" style={{ height: 54, marginBottom: 13 }} />
+              <div style={{ fontWeight: 700, fontSize: 19, color: "#2568c6", marginBottom: 7 }}>{L.outlook}</div>
+              <pre style={{ color: "#223", fontSize: "1em", marginBottom: 12, whiteSpace: "pre-line", textAlign: "left" }}>{L.howTo}</pre>
+              <button onClick={handleCopy}
+                style={{ background: "#257bf6", color: "#fff", fontWeight: 700, border: "none", borderRadius: 13, fontSize: "1em", padding: "6px 20px", marginBottom: 7 }}>
+                {L.copy}
+              </button>
+              <a href="outlook:///" target="_blank" rel="noopener noreferrer"
+                style={{ background: "#d4e3ff", color: "#135bbf", borderRadius: 13, padding: "7px 19px", fontWeight: 700, textDecoration: "none" }}>
+                <img src={ICONS.outlook} alt="Outlook" style={{ height: 18, verticalAlign: "middle", marginRight: 7 }} />
+                {L.toOutlook}
               </a>
-              <br /><br />
-              <button onClick={() => setShowPopup(false)} style={{
-                background: "#2964e0", color: "#fff", padding: "8px 23px",
-                borderRadius: 14, fontSize: "1em", border: "none", cursor: "pointer", fontWeight: 500
-              }}>{L.close}</button>
+              <button onClick={() => setShowPopup(false)}
+                style={{ marginTop: 15, color: "#888", background: "none", border: "none", fontSize: 17, cursor: "pointer" }}>{L.close}</button>
             </div>
           </div>
         )}
@@ -326,29 +360,19 @@ export default function SignatureApp() {
   );
 }
 
-// Input style helper
+function labelStyle() {
+  return { color: "#c3e0ff", fontWeight: 500, fontSize: "1.1em", marginLeft: 8 };
+}
 function inputStyle() {
   return {
-    fontSize: "1.11em",
-    padding: "9px 12px",
-    borderRadius: 9,
-    border: "1.2px solid #b0c5ee30",
-    background: "#292e37",
-    color: "#fff",
+    border: "1.5px solid #bce",
+    borderRadius: 8,
+    padding: "8px 10px",
+    fontSize: "1.05em",
+    background: "#fff",
+    color: "#222",
     outline: "none",
-    marginTop: 2,
-    marginBottom: 2,
-    width: "100%",
-    boxSizing: "border-box"
-  };
-}
-
-// Label style helper
-function labelStyle() {
-  return {
-    color: "#b4caee",
-    fontWeight: 500,
-    fontSize: "1.07em",
-    marginInlineEnd: 6
+    minWidth: 0,
+    marginRight: 3
   };
 }
