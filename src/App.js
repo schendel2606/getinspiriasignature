@@ -23,16 +23,17 @@ const GREETING_DEFAULTS = {
 const style = document.createElement("style");
 style.innerHTML = `
 body.light-mode { background: #f6fafd !important; color: #1a237e; }
-body.dark-mode { background: #181a1b !important; color: #f2f2f2; }
+body.dark-mode { background: #212A34 !important; color: #eaf1fb !important; }
 body.light-mode input, body.light-mode select { background: #fff !important; color: #222 !important; }
-body.dark-mode input, body.dark-mode select { background: #23272e !important; color: #f2f2f2 !important; }
+body.dark-mode input, body.dark-mode select { background: #232d39 !important; color: #f2f2f2 !important; }
 body.light-mode .main-box { background: #fff !important; }
-body.dark-mode .main-box { background: #23272e !important; }
+body.dark-mode .main-box { background: #232d39 !important; }
 `;
 if (!document.head.querySelector("style[data-inspiria]")) {
   style.setAttribute("data-inspiria", "true");
   document.head.appendChild(style);
 }
+
 
 // ---- STYLE OBJECTS ----
 const mainBoxStyle = {
@@ -436,10 +437,16 @@ useEffect(() => {
             <button style={{
               position: "absolute", left: 16, top: 12, fontSize: 18, background: "none", border: "none", color: "#999", cursor: "pointer"
             }} onClick={() => setShowOutlook(false)}>&#10005;</button>
-            <div style={{ display: "flex", alignItems: "center", marginBottom: 16 }}>
-              <img src={ICONS.outlook} alt="Outlook" style={{ width: 34, marginLeft: 7, borderRadius: "40%" }} />
-              <span style={{ fontWeight: 700, fontSize: "1.16em" }}>הוראות לאאוטלוק</span>
-            </div>
+			<div style={{ display: "flex", alignItems: "center", marginBottom: 16 }}>
+			<img src={ICONS.outlook} alt="Outlook" style={{ width: 34, marginLeft: 7 }} />
+			<span style={{ 
+				fontWeight: 700, 
+				fontSize: "1.16em", 
+				color: "#1a237e"    // כחול כהה
+			}}>
+				הוראות לאאוטלוק
+			</span>
+			</div>
 			<ol style={{ paddingRight: 15, color: "#222", fontSize: "1.08em", direction: "rtl", textAlign: "right" }}>
 			<li>העתק את החתימה באמצעות הכפתור.</li>
 			<li>לחץ על כפתור <b>עבור לאאוטלוק</b> למטה.</li>
