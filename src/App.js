@@ -103,44 +103,108 @@ export default function App() {
   // --- Labels ---
   const L = LABELS[lang];
 
-  // --- Generate Signature ---
-  function buildSignature() {
-    const isHeb = lang === "he";
-    const dir = isHeb ? "rtl" : "ltr";
-    const align = isHeb ? "right" : "left";
-    const greetingText = showGreeting ? (greeting || L.defaultGreeting) : "";
-    return `
-      <table dir="${dir}" style="font-family:Arial,sans-serif; font-size:14px; color:#222; text-align:${align}; direction:${dir}; line-height:1.7; width:420px;">
-        <tr>
-          <td style="padding-bottom:8px;">
-            <span style="font-size:17px; font-weight:bold; color:#1a237e;">${name || L.name}</span>
-            ${showLinkedin && linkedin ? `<a href="${linkedin}" target="_blank" style="margin-${isHeb ? "right" : "left"}:6px; vertical-align:middle;"><img src="${ICONS.linkedin}" alt="LinkedIn" style="height:18px; width:18px;"></a>` : ""}
-            <div style="color:#0044cc; font-size:15px;">${role || L.role}</div>
-            <a href="mailto:${email}" style="color:#000; text-decoration:none;">${email}</a>
-            ${showPhone && phone ? ` | <a href="tel:${phone}" style="color:#000; text-decoration:none;">${phone}</a>` : ""}
-          </td>
-        </tr>
-        <tr>
-          <td style="padding-bottom:2px;">
-            <b>${isHeb ? "שלוחה" : "Ext."}</b> ${ext || "-"}
-          </td>
-        </tr>
-        <tr>
-          <td style="color:#555; font-size:13px; padding-bottom:2px;">
-            ${isHeb ? "שעות פעילות: א'-ה' 09:00–17:30" : "Working hours: Sun-Thu 09:00–17:30"}
-          </td>
-        </tr>
-        <tr>
-          <td style="padding-bottom:6px;">
-            <a href="https://www.inspiria.co.il/" target="_blank">
-              <img src="${ICONS.banner}" alt="Inspiria" style="display:block;" width="210">
-            </a>
-          </td>
-        </tr>
-        ${greetingText && `<tr><td style="font-size:13.5px; color:#223; white-space:pre-line; padding-top:8px;">${greetingText}</td></tr>`}
-      </table>
-    `.replace(/\s{2,}/g, " ");
+function buildSignature() {
+  // אם אנגלית – HTML לפי הקובץ האנגלי, אחרת – לפי העברי
+  const isHeb = tab === "he";
+  let html = "";
+  if (isHeb) {
+    html = `
+<table dir="rtl" style="font-family: Arial,sans-serif; font-size: 14px; color: #000; text-align: right; direction: rtl; line-height: 1.6;" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td style="padding-bottom: 8px;">
+<span style="font-size: 17px; font-weight: bold; color: #1a237e;">${name || "שם מלא"}</span>
+${showLinkedin && linkedin ? `<a style="margin-right: 6px; vertical-align: middle;" href="${linkedin}" target="_blank">
+  <img style="height: 18px; width: 18px;" src="https://cdn-icons-png.flaticon.com/24/174/174857.png" alt="LinkedIn אישי" />
+</a>` : ""}
+<div style="color: #0044cc; font-size: 15px;">${role || "תפקיד"}</div>
+<a style="color: #000; text-decoration: none;" href="mailto:${email}">${email}</a>${showPhone && phone ? ` | <a style="color: #000; text-decoration: none;" href="tel:${phone}">${phone}</a>` : ""}
+</td>
+</tr>
+<tr>
+<td style="padding-bottom: 5px;">
+<span style="vertical-align: middle;"> <img style="height: 16px; width: 16px; vertical-align: middle; margin-left: 4px;" src="https://i.postimg.cc/SN3tSSmB/phone.png" alt="טלפון משרד" /> 03-3743555 </span>
+</td>
+</tr>
+<tr>
+<td style="color:#888; font-size:12px; padding-bottom: 2px;">
+<b>שעות פעילות:</b> ימים א'-ה' 09:00–17:30
+</td>
+</tr>
+<tr>
+<td style="padding-bottom: 6px;">
+<a href="https://www.inspiria.co.il/" target="_blank">
+<img style="display: block;" src="https://i.postimg.cc/L60S3Tyy/inspiria-signature.png" alt="Inspiria - אינספיריה" width="210" height="auto" />
+</a>
+</td>
+</tr>
+<tr>
+<td>
+<a style="margin-left: 6px;" href="https://www.google.com/maps/search/?api=1&amp;query=בנין+T,+Totseret+ha-Arets+St+3,+Petah+Tikva,+4951734" target="_blank">
+<img style="height: 32px; width: 32px;" src="https://i.postimg.cc/CMvQ2CXL/location.png" alt="מיקום" /></a>
+<a style="margin-left: 6px;" href="https://www.inspiria.co.il/" target="_blank">
+<img style="height: 32px; width: 32px;" src="https://i.postimg.cc/XqvDJXGb/internet.png" alt="אתר אינטרנט" /></a>
+<a style="margin-left: 6px;" href="https://www.facebook.com/InspiriaExperts" target="_blank">
+<img style="height: 32px; width: 32px;" src="https://i.postimg.cc/9FrnHRHP/facebook.png" alt="פייסבוק" /></a>
+<a href="https://www.linkedin.com/company/inspiria-sap-b1-experts/" target="_blank">
+<img style="height: 32px; width: 32px;" src="https://i.postimg.cc/gjBt6d86/linkedin.png" alt="LinkedIn - אינספיריה" /></a>
+</td>
+</tr>
+</tbody>
+</table>
+${showGreeting && greeting ? `<div style="margin-top:6px; color:#1a237e; font-size:15px;">${greeting}</div>` : ""}
+    `;
+  } else {
+    html = `
+<table dir="ltr" style="font-family: Arial,sans-serif; font-size: 14px; color: #000; text-align: left; direction: ltr; line-height: 1.6;" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td style="padding-bottom: 8px;">
+<span style="font-size: 17px; font-weight: bold; color: #1a237e;">${name || "Full Name"}</span>
+${showLinkedin && linkedin ? `<a style="margin-left: 6px; vertical-align: middle;" href="${linkedin}" target="_blank">
+  <img style="height: 18px; width: 18px;" src="https://cdn-icons-png.flaticon.com/24/174/174857.png" alt="Personal LinkedIn" />
+</a>` : ""}
+<div style="color: #0044cc; font-size: 15px;">${role || "Role"}</div>
+<a style="color: #000; text-decoration: none;" href="mailto:${email}">${email}</a>${showPhone && phone ? ` | <a style="color: #000; text-decoration: none;" href="tel:${phone}">${phone}</a>` : ""}
+</td>
+</tr>
+<tr>
+<td style="padding-bottom: 5px;">
+<span style="vertical-align: middle;"> <img style="height: 16px; width: 16px; vertical-align: middle; margin-right: 4px;" src="https://i.postimg.cc/SN3tSSmB/phone.png" alt="Office Phone" /> 03-3743555 </span>
+</td>
+</tr>
+<tr>
+<td style="color:#888; font-size:12px; padding-bottom: 2px;">
+<b>Working hours:</b> Sun-Thu 09:00–17:30
+</td>
+</tr>
+<tr>
+<td style="padding-bottom: 6px;">
+<a href="https://www.inspiria.co.il/" target="_blank">
+<img style="display: block;" src="https://i.postimg.cc/L60S3Tyy/inspiria-signature.png" alt="Inspiria Banner" width="210" height="auto" />
+</a>
+</td>
+</tr>
+<tr>
+<td>
+<a style="margin-right: 6px;" href="https://www.google.com/maps/search/?api=1&amp;query=Building+T,+Totseret+ha-Arets+St+3,+Petah+Tikva,+4951734" target="_blank">
+<img style="height: 32px; width: 32px;" src="https://i.postimg.cc/CMvQ2CXL/location.png" alt="Location" /></a>
+<a style="margin-right: 6px;" href="https://www.inspiria.co.il/" target="_blank">
+<img style="height: 32px; width: 32px;" src="https://i.postimg.cc/XqvDJXGb/internet.png" alt="Website" /></a>
+<a style="margin-right: 6px;" href="https://www.facebook.com/InspiriaExperts" target="_blank">
+<img style="height: 32px; width: 32px;" src="https://i.postimg.cc/9FrnHRHP/facebook.png" alt="Facebook" /></a>
+<a href="https://www.linkedin.com/company/inspiria-sap-b1-experts/" target="_blank">
+<img style="height: 32px; width: 32px;" src="https://i.postimg.cc/gjBt6d86/linkedin.png" alt="LinkedIn - Inspiria" /></a>
+</td>
+</tr>
+</tbody>
+</table>
+${showGreeting && greeting ? `<div style="margin-top:6px; color:#1a237e; font-size:15px;">${greeting}</div>` : ""}
+    `;
   }
+  return html;
+}
+
 
   function handleGenerate(e) {
     e.preventDefault();
