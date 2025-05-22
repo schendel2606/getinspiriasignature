@@ -420,7 +420,20 @@ useEffect(() => {
               </button>
             </div>
           </div>
-          <div ref={previewRef} style={{ background: "#fff", borderRadius: 10, padding: 18, minHeight: 60 }} dangerouslySetInnerHTML={{ __html: buildSignature() }} />
+          <div
+			ref={previewRef}
+			style={{
+				background: "#fff",
+				borderRadius: 10,
+				padding: 18,
+				minHeight: 60,
+				// שינוי היישור בהתאם לשפה
+				textAlign: tab === "he" ? "right" : "left",
+				direction: tab === "he" ? "rtl" : "ltr"
+			}}
+			dangerouslySetInnerHTML={{ __html: buildSignature() }}
+			/>
+			
         </div>
       </div>
 
