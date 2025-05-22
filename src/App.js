@@ -101,14 +101,21 @@ const modeSelectStyle = {
   background: "#f3f7fc"
 };
 
-function setColorMode(mode) {
+function setColorModeState(mode) {
+  localStorage.setItem("color-mode", mode);
   if (mode === "system") {
-    const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
-    document.body.className = prefersLight ? "light-mode" : "dark-mode";
+    document.body.classList.remove("light-mode", "dark-mode");
+    if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+      document.body.classList.add("light-mode");
+    } else {
+      document.body.classList.add("dark-mode");
+    }
   } else {
-    document.body.className = mode === "light" ? "light-mode" : "dark-mode";
+    document.body.classList.remove("light-mode", "dark-mode");
+    document.body.classList.add(mode === "light" ? "light-mode" : "dark-mode");
   }
 }
+
 
 // ---- COMPONENT ----
 export default function SignatureGenerator() {
