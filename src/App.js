@@ -9,7 +9,7 @@ const ICONS = {
   facebook: "https://i.postimg.cc/9FrnHRHP/facebook.png",
   linkedinCompany: "https://i.postimg.cc/gjBt6d86/linkedin.png",
   banner: "https://i.postimg.cc/L60S3Tyy/inspiria-signature.png",
-  outlook: "https://i.postimg.cc/YCz99hSj/outlook-logo.png"
+	outlook: "https://upload.wikimedia.org/wikipedia/commons/4/4e/Microsoft_Office_Outlook_%282018–present%29.svg"
 };
 const INSPIRIA_LOGO_BG = "https://i.postimg.cc/dVq5SbJX/Inspiria-Logo.png";
 
@@ -59,7 +59,7 @@ const rowStyle = {
   display: "flex",
   flexDirection: "row",
   gap: 24,
-  alignItems: "flex-start",
+  alignItems: "flex-end",
   marginBottom: 18
 };
 const colStyle = { display: "flex", flexDirection: "column", flex: 1, gap: 4 };
@@ -298,6 +298,17 @@ ${showLinkedin ? `<a style="margin-left: 6px; vertical-align: middle;" href="${l
     `;
   }
 
+useEffect(() => {
+  document.documentElement.setAttribute("dir", "rtl");
+  document.body.style.direction = "rtl";
+  document.body.style.textAlign = "right";
+  return () => {
+    document.documentElement.setAttribute("dir", "ltr");
+    document.body.style.direction = "";
+    document.body.style.textAlign = "";
+  };
+}, []);
+
   // ---- RENDER ----
   return (
     <div style={{ position: "relative", minHeight: 550 }}>
@@ -429,13 +440,14 @@ ${showLinkedin ? `<a style="margin-left: 6px; vertical-align: middle;" href="${l
               <img src={ICONS.outlook} alt="Outlook" style={{ width: 34, marginLeft: 7, borderRadius: "40%" }} />
               <span style={{ fontWeight: 700, fontSize: "1.16em" }}>הוראות לאאוטלוק</span>
             </div>
-            <ol style={{ paddingRight: 15, color: "#222", fontSize: "1.08em" }}>
-              <li>העתק את החתימה באמצעות הכפתור.</li>
-              <li>לחץ על כפתור <b>עבור לאאוטלוק</b> למטה.</li>
-              <li>היכנס ל־Outlook &gt; הגדרות &gt; הצג את כל הגדרות Outlook &gt; דואר &gt; חתימות.</li>
-              <li>הדבק את החתימה בתיבת העריכה.</li>
-              <li>שמור. זהו!</li>
-            </ol>
+			<ol style={{ paddingRight: 15, color: "#222", fontSize: "1.08em", direction: "rtl", textAlign: "right" }}>
+			<li>העתק את החתימה באמצעות הכפתור.</li>
+			<li>לחץ על כפתור <b>עבור לאאוטלוק</b> למטה.</li>
+			<li>היכנס ל־אאוטלוק &gt; הגדרות &gt; הצג את כל הגדרות אאוטלוק &gt; דואר &gt; חתימות.</li>
+			<li>הדבק את החתימה בתיבת העריכה.</li>
+			<li>שמור. זהו!</li>
+			</ol>
+
             <div style={{ marginTop: 18, display: "flex", justifyContent: "flex-end", gap: 8 }}>
               <button style={smallBtnStyle} onClick={handleCopy}>העתק חתימה</button>
               <a
