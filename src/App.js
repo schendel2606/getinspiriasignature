@@ -9,7 +9,7 @@ const ICONS = {
   facebook: "https://i.postimg.cc/9FrnHRHP/facebook.png",
   linkedinCompany: "https://i.postimg.cc/gjBt6d86/linkedin.png",
   banner: "https://i.postimg.cc/L60S3Tyy/inspiria-signature.png",
-	outlook: "https://upload.wikimedia.org/wikipedia/commons/4/4e/Microsoft_Office_Outlook_%282018–present%29.svg"
+outlook: "https://img.icons8.com/color/96/microsoft-outlook-2019.png"
 };
 const INSPIRIA_LOGO_BG = "https://i.postimg.cc/dVq5SbJX/Inspiria-Logo.png";
 
