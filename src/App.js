@@ -230,7 +230,6 @@ function buildSignature() {
     ? `<div style="margin-bottom:3px; color:#1a237e; font-size:15px;">${greeting}</div>`
     : "";
 
-  // מערך האייקונים הקטנים (רק לשנות את הסדר/הוספת אייקונים פה)
   const iconArrayHe = [
     {
       link: "https://www.google.com/maps/search/?api=1&query=בנין+T,+Totseret+ha-Arets+St+3,+Petah+Tikva,+4951734",
@@ -277,10 +276,8 @@ function buildSignature() {
     }
   ];
 
-  // פונקציה שמחזירה שורת אייקונים בטבלה
   function getIconsHTML(isHe) {
     const icons = isHe ? iconArrayHe : iconArrayEn;
-    // ברירת מחדל: ריווח של 5px בין כל טבלה
     return icons.map((icon, idx) =>
       makeIcon(icon.link, icon.src, icon.alt, isHe ? "right" : "left") +
       (idx < icons.length - 1 ? `<span style="display:inline-block;width:6px"></span>` : "")
