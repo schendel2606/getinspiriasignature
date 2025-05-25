@@ -287,7 +287,6 @@ function buildSignature() {
     ).join("");
   }
 
-  // הגדרת מאפיינים דינאמיים לשפה
   const dir = isHe ? "rtl" : "ltr";
   const align = isHe ? "right" : "left";
   const tdAlign = align;
@@ -324,13 +323,13 @@ ${showLinkedin ? `<a style="margin-right: 6px; vertical-align: middle;" href="${
 <tr>
 <td style="padding-bottom: 6px;" align="right">
 <a href="https://www.inspiria.co.il/" target="_blank">
-<img style="display: block;" src="${ICONS.banner}" alt="Inspiria - אינספיריה" width="210" height="55" />
+<img src="${ICONS.banner}" alt="Inspiria - אינספיריה" width="210" style="display:block; height:auto; border:0; outline:none;" />
 </a>
 </td>
 </tr>
 <tr>
-<td align="right" style="${tdPadding}">
-${getIconsHTML(true)}
+<td align="right" style="padding-bottom: 0;">
+${getIconsRow(iconArrayHe, "right")}
 </td>
 </tr>
 </tbody>
@@ -369,21 +368,19 @@ ${showLinkedin ? `<a style="margin-left: 6px; vertical-align: middle;" href="${l
 <tr>
 <td style="padding-bottom: 6px;" align="left">
 <a href="https://www.inspiria.co.il/" target="_blank">
-<img style="display: block;" src="${ICONS.banner}" alt="Inspiria Banner" width="210" height="55" />
+<img src="${ICONS.banner}" alt="Inspiria Banner" width="210" style="display:block; height:auto; border:0; outline:none;" />
 </a>
 </td>
 </tr>
 <tr>
-<td align="left" style="${tdPadding}">
-${getIconsHTML(false)}
+<td align="left" style="padding-bottom: 0;">
+${getIconsRow(iconArrayEn, "left")}
 </td>
 </tr>
 </tbody>
 </table>
   `;
 }
-
-
 useEffect(() => {
   document.documentElement.setAttribute("dir", "rtl");
   document.body.style.direction = "rtl";
