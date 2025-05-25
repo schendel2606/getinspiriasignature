@@ -320,7 +320,7 @@ ${showLinkedin ? `<a style="margin-right: 6px; vertical-align: middle;" href="${
 <tr>
 <td style="padding-bottom: 6px;" align="right">
 <a href="https://www.inspiria.co.il/" target="_blank">
-<img src="${ICONS.banner}" alt="Inspiria - אינספיריה" width="210" style="display:block; height:"150"; border:0; outline:none;" />
+  <img src="${ICONS.banner}" alt="Inspiria - אינספיריה" width="230" style="display:block; height:auto; border:0; outline:none; margin:0; padding:0;" />
 </a>
 </td>
 </tr>
