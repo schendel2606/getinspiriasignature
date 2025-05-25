@@ -207,111 +207,182 @@ export default function SignatureGenerator() {
     }
   }
 
-  // ---- BUILD SIGNATURE ----
-  function buildSignature() {
-    const isHe = tab === "he";
-    const hasLinkedin = showLinkedin && (linkedin || true); // קישור כללי
-    const linkedinHref = linkedin || "https://www.linkedin.com/";
-    const greetingHTML = showGreeting && greeting
-      ? `<div style="margin-bottom:3px; color:#1a237e; font-size:15px;">${greeting}</div>`
-      : "";
+function makeIcon(link, src, alt, align = "left") {
+  return `
+  <table style="display:inline-block;vertical-align:middle;" width="32" height="32" cellpadding="0" cellspacing="0" border="0" align="${align}">
+    <tr>
+      <td width="32" height="32" style="padding:0;margin:0;">
+        <a href="${link}" target="_blank">
+          <img src="${src}" width="32" height="32" style="display:block;border:0;outline:none;text-decoration:none;width:32px;height:32px;" alt="${alt}" />
+        </a>
+      </td>
+    </tr>
+  </table>
+  `;
+}
 
-    if (isHe) {
-      return `
-<table dir="rtl" style="font-family: Arial,sans-serif; font-size: 14px; color: #000; text-align: right; direction: rtl; line-height: 1.6;" cellspacing="0" cellpadding="0">
+// ---- BUILD SIGNATURE ----
+function buildSignature() {
+  const isHe = tab === "he";
+  const hasLinkedin = showLinkedin && (linkedin || true); // קישור כללי
+  const linkedinHref = linkedin || "https://www.linkedin.com/";
+  const greetingHTML = showGreeting && greeting
+    ? `<div style="margin-bottom:3px; color:#1a237e; font-size:15px;">${greeting}</div>`
+    : "";
+
+  // מערך האייקונים הקטנים (רק לשנות את הסדר/הוספת אייקונים פה)
+  const iconArrayHe = [
+    {
+      link: "https://www.google.com/maps/search/?api=1&query=בנין+T,+Totseret+ha-Arets+St+3,+Petah+Tikva,+4951734",
+      src: ICONS.location,
+      alt: "מיקום"
+    },
+    {
+      link: "https://www.inspiria.co.il/",
+      src: ICONS.website,
+      alt: "אתר אינטרנט"
+    },
+    {
+      link: "https://www.facebook.com/InspiriaExperts",
+      src: ICONS.facebook,
+      alt: "פייסבוק"
+    },
+    {
+      link: "https://www.linkedin.com/company/inspiria-sap-b1-experts/",
+      src: ICONS.linkedinCompany,
+      alt: "LinkedIn - אינספיריה"
+    }
+  ];
+
+  const iconArrayEn = [
+    {
+      link: "https://www.google.com/maps/search/?api=1&query=Building+T,+Totseret+ha-Arets+St+3,+Petah+Tikva,+4951734",
+      src: ICONS.location,
+      alt: "Location"
+    },
+    {
+      link: "https://www.inspiria.co.il/",
+      src: ICONS.website,
+      alt: "Website"
+    },
+    {
+      link: "https://www.facebook.com/InspiriaExperts",
+      src: ICONS.facebook,
+      alt: "Facebook"
+    },
+    {
+      link: "https://www.linkedin.com/company/inspiria-sap-b1-experts/",
+      src: ICONS.linkedinCompany,
+      alt: "LinkedIn - Inspiria"
+    }
+  ];
+
+  // פונקציה שמחזירה שורת אייקונים בטבלה
+  function getIconsHTML(isHe) {
+    const icons = isHe ? iconArrayHe : iconArrayEn;
+    // ברירת מחדל: ריווח של 5px בין כל טבלה
+    return icons.map((icon, idx) =>
+      makeIcon(icon.link, icon.src, icon.alt, isHe ? "right" : "left") +
+      (idx < icons.length - 1 ? `<span style="display:inline-block;width:6px"></span>` : "")
+    ).join("");
+  }
+
+  // הגדרת מאפיינים דינאמיים לשפה
+  const dir = isHe ? "rtl" : "ltr";
+  const align = isHe ? "right" : "left";
+  const tdAlign = align;
+  const tdPadding = isHe ? "padding-bottom: 6px;" : "padding-bottom: 6px;";
+
+  if (isHe) {
+    return `
+<table dir="rtl" style="font-family: Arial,sans-serif; font-size: 14px; color: #000; text-align: right; direction: rtl; line-height: 1.6;" cellspacing="0" cellpadding="0" width="100%">
 <tbody>
 <tr>
-<td style="padding-bottom: 8px;">
+<td style="padding-bottom: 8px;" align="right">
 ${greetingHTML}
 <span style="font-size: 17px; font-weight: bold; color: #1a237e;">${name || "שם מלא"}</span>
 ${showLinkedin ? `<a style="margin-right: 6px; vertical-align: middle;" href="${linkedinHref}" target="_blank">
-  <img style="height: 18px; width: 18px;" src="${ICONS.linkedin}" alt="LinkedIn אישי" />
+  <img src="${ICONS.linkedin}" width="18" height="18" style="display:inline-block;width:18px;height:18px;border:0;outline:none;text-decoration:none;vertical-align:middle;" alt="LinkedIn אישי" />
 </a>` : ""}
 <div style="color: #0044cc; font-size: 15px;">${role || "תפקיד"}</div>
 <a style="color: #000; text-decoration: none;" href="mailto:${email}">${email}</a>${showPhone && phone ? ` | <a style="color: #000; text-decoration: none;" href="tel:${phone}">${phone}</a>` : ""}
 </td>
 </tr>
 <tr>
-<td style="padding-bottom: 5px;">
-<span style="vertical-align: middle;"> <img style="height: 16px; width: 16px; vertical-align: middle; margin-left: 4px;" src="${ICONS.phone}" alt="טלפון משרד" /> 03-3743555${ext ? `, שלוחה ${ext}` : ""} </span>
+<td style="padding-bottom: 5px;" align="right">
+<span style="vertical-align: middle;">
+  <img src="${ICONS.phone}" width="16" height="16" style="display:inline-block;width:16px;height:16px;border:0;outline:none;text-decoration:none;vertical-align:middle;margin-left:4px;" alt="טלפון משרד" />
+  03-3743555${ext ? `, שלוחה ${ext}` : ""}
+</span>
 </td>
 </tr>
 <tr>
-<td style="color:#888; font-size:12px; padding-bottom: 2px;">
+<td style="color:#888; font-size:12px; padding-bottom: 2px;" align="right">
 <b>שעות פעילות:</b> ימים א'-ה' 09:00–17:30
 </td>
 </tr>
 <tr>
-<td style="padding-bottom: 6px;">
+<td style="padding-bottom: 6px;" align="right">
 <a href="https://www.inspiria.co.il/" target="_blank">
-<img style="display: block;" src="${ICONS.banner}" alt="Inspiria - אינספיריה" width="210" height="auto" />
+<img style="display: block;" src="${ICONS.banner}" alt="Inspiria - אינספיריה" width="210" height="55" />
 </a>
 </td>
 </tr>
 <tr>
-<td>
-<a style="margin-left: 6px;" href="https://www.google.com/maps/search/?api=1&amp;query=בנין+T,+Totseret+ha-Arets+St+3,+Petah+Tikva,+4951734" target="_blank">
-<img style="height: 32px; width: 32px;" src="${ICONS.location}" alt="מיקום" /></a>
-<a style="margin-left: 6px;" href="https://www.inspiria.co.il/" target="_blank">
-<img style="height: 32px; width: 32px;" src="${ICONS.website}" alt="אתר אינטרנט" /></a>
-<a style="margin-left: 6px;" href="https://www.facebook.com/InspiriaExperts" target="_blank">
-<img style="height: 32px; width: 32px;" src="${ICONS.facebook}" alt="פייסבוק" /></a>
-<a href="https://www.linkedin.com/company/inspiria-sap-b1-experts/" target="_blank">
-<img style="height: 32px; width: 32px;" src="${ICONS.linkedinCompany}" alt="LinkedIn - אינספיריה" /></a>
-</td>
-</tr>
-</tbody>
-</table>
-      `;
-    }
-    // ----- אנגלית -----
-    return `
-<table dir="ltr" style="font-family: Arial,sans-serif; font-size: 14px; color: #000; text-align: left; direction: ltr; line-height: 1.6;" cellspacing="0" cellpadding="0">
-<tbody>
-<tr>
-<td style="padding-bottom: 8px;">
-${greetingHTML}
-<span style="font-size: 17px; font-weight: bold; color: #1a237e;">${name || "Full Name"}</span>
-${showLinkedin ? `<a style="margin-left: 6px; vertical-align: middle;" href="${linkedinHref}" target="_blank">
-  <img style="height: 18px; width: 18px;" src="${ICONS.linkedin}" alt="Personal LinkedIn" />
-</a>` : ""}
-<div style="color: #0044cc; font-size: 15px;">${role || "Role"}</div>
-<a style="color: #000; text-decoration: none;" href="mailto:${email}">${email}</a>${showPhone && phone ? ` | <a style="color: #000; text-decoration: none;" href="tel:${phone}">${phone}</a>` : ""}
-</td>
-</tr>
-<tr>
-<td style="padding-bottom: 5px;">
-<span style="vertical-align: middle;"> <img style="height: 16px; width: 16px; vertical-align: middle; margin-right: 4px;" src="${ICONS.phone}" alt="Office Phone" /> 03-3743555${ext ? `, Ext. ${ext}` : ""} </span>
-</td>
-</tr>
-<tr>
-<td style="color:#888; font-size:12px; padding-bottom: 2px;">
-<b>Working hours:</b> Sun-Thu 09:00–17:30
-</td>
-</tr>
-<tr>
-<td style="padding-bottom: 6px;">
-<a href="https://www.inspiria.co.il/" target="_blank">
-<img style="display: block;" src="${ICONS.banner}" alt="Inspiria Banner" width="210" height="auto" />
-</a>
-</td>
-</tr>
-<tr>
-<td>
-<a style="margin-right: 6px;" href="https://www.google.com/maps/search/?api=1&amp;query=Building+T,+Totseret+ha-Arets+St+3,+Petah+Tikva,+4951734" target="_blank">
-<img style="height: 32px; width: 32px;" src="${ICONS.location}" alt="Location" /></a>
-<a style="margin-right: 6px;" href="https://www.inspiria.co.il/" target="_blank">
-<img style="height: 32px; width: 32px;" src="${ICONS.website}" alt="Website" /></a>
-<a style="margin-right: 6px;" href="https://www.facebook.com/InspiriaExperts" target="_blank">
-<img style="height: 32px; width: 32px;" src="${ICONS.facebook}" alt="Facebook" /></a>
-<a href="https://www.linkedin.com/company/inspiria-sap-b1-experts/" target="_blank">
-<img style="height: 32px; width: 32px;" src="${ICONS.linkedinCompany}" alt="LinkedIn - Inspiria" /></a>
+<td align="right" style="${tdPadding}">
+${getIconsHTML(true)}
 </td>
 </tr>
 </tbody>
 </table>
     `;
   }
+
+  // ----- אנגלית -----
+  return `
+<table dir="ltr" style="font-family: Arial,sans-serif; font-size: 14px; color: #000; text-align: left; direction: ltr; line-height: 1.6;" cellspacing="0" cellpadding="0" width="100%">
+<tbody>
+<tr>
+<td style="padding-bottom: 8px;" align="left">
+${greetingHTML}
+<span style="font-size: 17px; font-weight: bold; color: #1a237e;">${name || "Full Name"}</span>
+${showLinkedin ? `<a style="margin-left: 6px; vertical-align: middle;" href="${linkedinHref}" target="_blank">
+  <img src="${ICONS.linkedin}" width="18" height="18" style="display:inline-block;width:18px;height:18px;border:0;outline:none;text-decoration:none;vertical-align:middle;" alt="Personal LinkedIn" />
+</a>` : ""}
+<div style="color: #0044cc; font-size: 15px;">${role || "Role"}</div>
+<a style="color: #000; text-decoration: none;" href="mailto:${email}">${email}</a>${showPhone && phone ? ` | <a style="color: #000; text-decoration: none;" href="tel:${phone}">${phone}</a>` : ""}
+</td>
+</tr>
+<tr>
+<td style="padding-bottom: 5px;" align="left">
+<span style="vertical-align: middle;">
+  <img src="${ICONS.phone}" width="16" height="16" style="display:inline-block;width:16px;height:16px;border:0;outline:none;text-decoration:none;vertical-align:middle;margin-right:4px;" alt="Office Phone" />
+  03-3743555${ext ? `, Ext. ${ext}` : ""}
+</span>
+</td>
+</tr>
+<tr>
+<td style="color:#888; font-size:12px; padding-bottom: 2px;" align="left">
+<b>Working hours:</b> Sun-Thu 09:00–17:30
+</td>
+</tr>
+<tr>
+<td style="padding-bottom: 6px;" align="left">
+<a href="https://www.inspiria.co.il/" target="_blank">
+<img style="display: block;" src="${ICONS.banner}" alt="Inspiria Banner" width="210" height="55" />
+</a>
+</td>
+</tr>
+<tr>
+<td align="left" style="${tdPadding}">
+${getIconsHTML(false)}
+</td>
+</tr>
+</tbody>
+</table>
+  `;
+}
+
 
 useEffect(() => {
   document.documentElement.setAttribute("dir", "rtl");
