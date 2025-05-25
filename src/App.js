@@ -8,16 +8,16 @@ const ICONS = {
   website: "https://i.postimg.cc/XqvDJXGb/internet.png",
   facebook: "https://i.postimg.cc/9FrnHRHP/facebook.png",
   linkedinCompany: "https://i.postimg.cc/gjBt6d86/linkedin.png",
-  banner: "https://i.postimg.cc/L60S3Tyy/inspiria-signature.png",
+  banner: "https://i.postimg.cc/dVq5SbJX/Inspiria-Logo.png",
 outlook: "https://img.icons8.com/color/96/microsoft-outlook-2019.png"
 };
 const INSPIRIA_LOGO_BG = "https://i.postimg.cc/dVq5SbJX/Inspiria-Logo.png";
 
-// ---- DEFAULTS ----
 const GREETING_DEFAULTS = {
   he: "בברכה,",
   en: "Best Regards,"
 };
+
 
 // ---- BODY STYLES ----
 const style = document.createElement("style");
@@ -41,7 +41,6 @@ if (!document.head.querySelector("style[data-inspiria]")) {
 }
 
 
-
 // ---- STYLE OBJECTS ----
 const mainBoxStyle = {
   maxWidth: 700,
@@ -55,6 +54,7 @@ const mainBoxStyle = {
   zIndex: 1,
   minHeight: 550
 };
+
 const logoBgStyle = {
   background: `url(${INSPIRIA_LOGO_BG}) no-repeat center center/220px`,
   opacity: 0.09,
@@ -71,7 +71,9 @@ const rowStyle = {
   marginBottom: 18
 };
 const colStyle = { display: "flex", flexDirection: "column", flex: 1, gap: 4 };
+
 const labelStyle = { fontWeight: 500, marginBottom: 3, color: "#1a237e", fontSize: 16 };
+
 const inputStyle = {
   border: "1.5px solid #bce",
   borderRadius: 8,
@@ -83,7 +85,9 @@ const inputStyle = {
   minWidth: 0,
   width: "100%"
 };
+
 const checkStyle = { marginRight: 9, transform: "scale(1.11)" };
+
 const tooltipIconStyle = {
   color: "#2678ee",
   cursor: "help",
@@ -92,6 +96,7 @@ const tooltipIconStyle = {
   fontSize: "1.1em",
   display: "inline-block"
 };
+
 const tabBtnStyle = (active) => ({
   background: active ? "#2678ee" : "#f3f7fc",
   color: active ? "#fff" : "#2678ee",
@@ -105,6 +110,7 @@ const tabBtnStyle = (active) => ({
   boxShadow: active ? "0 2px 18px #2678ee18" : undefined,
   borderBottom: active ? "2.5px solid #2678ee" : "2.5px solid #f3f7fc"
 });
+
 const smallBtnStyle = {
   background: "#eaf2fa",
   color: "#2583d1",
@@ -117,6 +123,7 @@ const smallBtnStyle = {
   cursor: "pointer",
   transition: "all .16s"
 };
+
 const modeSelectStyle = {
   position: "absolute",
   top: 18,
@@ -131,7 +138,7 @@ const modeSelectStyle = {
   background: "#f3f7fc"
 };
 
-// ---- UTILS ----
+// ---- GetDisplayMode ----
 function setColorModeState(mode) {
   localStorage.setItem("color-mode", mode);
   if (mode === "system") {
@@ -203,7 +210,7 @@ export default function SignatureGenerator() {
   // ---- BUILD SIGNATURE ----
   function buildSignature() {
     const isHe = tab === "he";
-    const hasLinkedin = showLinkedin && (linkedin || true); // תמיד מציג אייקון עם קישור כללי אם לא סופק קישור
+    const hasLinkedin = showLinkedin && (linkedin || true); // קישור כללי
     const linkedinHref = linkedin || "https://www.linkedin.com/";
     const greetingHTML = showGreeting && greeting
       ? `<div style="margin-bottom:3px; color:#1a237e; font-size:15px;">${greeting}</div>`
