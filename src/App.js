@@ -9,7 +9,7 @@ const ICONS = {
   facebook: "https://i.postimg.cc/9FrnHRHP/facebook.png",
   linkedinCompany: "https://i.postimg.cc/gjBt6d86/linkedin.png",
   banner: "https://i.postimg.cc/dVq5SbJX/Inspiria-Logo.png",
-outlook: "https://img.icons8.com/color/96/microsoft-outlook-2019.png"
+  outlook: "https://img.icons8.com/color/96/microsoft-outlook-2019.png"
 };
 const INSPIRIA_LOGO_BG = "https://i.postimg.cc/dVq5SbJX/Inspiria-Logo.png";
 
@@ -17,7 +17,6 @@ const GREETING_DEFAULTS = {
   he: "בברכה,",
   en: "Best Regards,"
 };
-
 
 // ---- BODY STYLES ----
 const style = document.createElement("style");
@@ -39,7 +38,6 @@ if (!document.head.querySelector("style[data-inspiria]")) {
   style.setAttribute("data-inspiria", "true");
   document.head.appendChild(style);
 }
-
 
 // ---- STYLE OBJECTS ----
 const mainBoxStyle = {
@@ -154,6 +152,21 @@ function setColorModeState(mode) {
   }
 }
 
+// ---- ICON TABLE GENERATOR ----
+function makeIcon(link, src, alt, align = "left") {
+  return `
+  <table style="display:inline-block;vertical-align:middle;" width="32" height="32" cellpadding="0" cellspacing="0" border="0" align="${align}">
+    <tr>
+      <td width="32" height="32" style="padding:0;margin:0;">
+        <a href="${link}" target="_blank">
+          <img src="${src}" width="32" height="32" style="display:block;border:0;outline:none;text-decoration:none;width:32px;height:32px;" alt="${alt}" />
+        </a>
+      </td>
+    </tr>
+  </table>
+  `;
+}
+
 // ---- COMPONENT ----
 export default function SignatureGenerator() {
   const [tab, setTab] = useState("he"); // Hebrew or English
@@ -207,85 +220,71 @@ export default function SignatureGenerator() {
     }
   }
 
-function makeIcon(link, src, alt, align = "left") {
-  return `
-  <table style="display:inline-block;vertical-align:middle;" width="32" height="32" cellpadding="0" cellspacing="0" border="0" align="${align}">
-    <tr>
-      <td width="32" height="32" style="padding:0;margin:0;">
-        <a href="${link}" target="_blank">
-          <img src="${src}" width="32" height="32" style="display:block;border:0;outline:none;text-decoration:none;width:32px;height:32px;" alt="${alt}" />
-        </a>
-      </td>
-    </tr>
-  </table>
-  `;
-}
+  // ---- BUILD SIGNATURE ----
+  function buildSignature() {
+    const isHe = tab === "he";
+    const hasLinkedin = showLinkedin && (linkedin || true);
+    const linkedinHref = linkedin || "https://www.linkedin.com/";
+    const greetingHTML = showGreeting && greeting
+      ? `<div style="margin-bottom:3px; color:#1a237e; font-size:15px;">${greeting}</div>`
+      : "";
 
-// ---- BUILD SIGNATURE ----
-function buildSignature() {
-  const isHe = tab === "he";
-  const hasLinkedin = showLinkedin && (linkedin || true);
-  const linkedinHref = linkedin || "https://www.linkedin.com/";
-  const greetingHTML = showGreeting && greeting
-    ? `<div style="margin-bottom:3px; color:#1a237e; font-size:15px;">${greeting}</div>`
-    : "";
+    const iconArrayHe = [
+      {
+        link: "https://www.google.com/maps/search/?api=1&query=בנין+T,+Totseret+ha-Arets+St+3,+Petah+Tikva,+4951734",
+        src: ICONS.location,
+        alt: "מיקום"
+      },
+      {
+        link: "https://www.inspiria.co.il/",
+        src: ICONS.website,
+        alt: "אתר אינטרנט"
+      },
+      {
+        link: "https://www.facebook.com/InspiriaExperts",
+        src: ICONS.facebook,
+        alt: "פייסבוק"
+      },
+      {
+        link: "https://www.linkedin.com/company/inspiria-sap-b1-experts/",
+        src: ICONS.linkedinCompany,
+        alt: "LinkedIn - אינספיריה"
+      }
+    ];
 
-  const iconArrayHe = [
-    {
-      link: "https://www.google.com/maps/search/?api=1&query=בנין+T,+Totseret+ha-Arets+St+3,+Petah+Tikva,+4951734",
-      src: ICONS.location,
-      alt: "מיקום"
-    },
-    {
-      link: "https://www.inspiria.co.il/",
-      src: ICONS.website,
-      alt: "אתר אינטרנט"
-    },
-    {
-      link: "https://www.facebook.com/InspiriaExperts",
-      src: ICONS.facebook,
-      alt: "פייסבוק"
-    },
-    {
-      link: "https://www.linkedin.com/company/inspiria-sap-b1-experts/",
-      src: ICONS.linkedinCompany,
-      alt: "LinkedIn - אינספיריה"
+    const iconArrayEn = [
+      {
+        link: "https://www.google.com/maps/search/?api=1&query=Building+T,+Totseret+ha-Arets+St+3,+Petah+Tikva,+4951734",
+        src: ICONS.location,
+        alt: "Location"
+      },
+      {
+        link: "https://www.inspiria.co.il/",
+        src: ICONS.website,
+        alt: "Website"
+      },
+      {
+        link: "https://www.facebook.com/InspiriaExperts",
+        src: ICONS.facebook,
+        alt: "Facebook"
+      },
+      {
+        link: "https://www.linkedin.com/company/inspiria-sap-b1-experts/",
+        src: ICONS.linkedinCompany,
+        alt: "LinkedIn - Inspiria"
+      }
+    ];
+
+    function getIconsHTML(isHe) {
+      const icons = isHe ? iconArrayHe : iconArrayEn;
+      return icons.map((icon, idx) =>
+        makeIcon(icon.link, icon.src, icon.alt, isHe ? "right" : "left") +
+        (idx < icons.length - 1 ? `<span style="display:inline-block;width:6px"></span>` : "")
+      ).join("");
     }
-  ];
 
-  const iconArrayEn = [
-    {
-      link: "https://www.google.com/maps/search/?api=1&query=Building+T,+Totseret+ha-Arets+St+3,+Petah+Tikva,+4951734",
-      src: ICONS.location,
-      alt: "Location"
-    },
-    {
-      link: "https://www.inspiria.co.il/",
-      src: ICONS.website,
-      alt: "Website"
-    },
-    {
-      link: "https://www.facebook.com/InspiriaExperts",
-      src: ICONS.facebook,
-      alt: "Facebook"
-    },
-    {
-      link: "https://www.linkedin.com/company/inspiria-sap-b1-experts/",
-      src: ICONS.linkedinCompany,
-      alt: "LinkedIn - Inspiria"
-    }
-  ];
-
-  function getIconsHTML(isHe) {
-    const icons = isHe ? iconArrayHe : iconArrayEn;
-    return icons.map((icon, idx) =>
-      makeIcon(icon.link, icon.src, icon.alt, isHe ? "right" : "left") +
-      (idx < icons.length - 1 ? `<span style="display:inline-block;width:6px"></span>` : "")
-    ).join("");
-  }
-
-  if (isHe) {
-    return `
+    if (isHe) {
+      return `
 <table dir="rtl" style="font-family: Arial,sans-serif; font-size: 14px; color: #000; text-align: right; direction: rtl; line-height: 1.6;" cellspacing="0" cellpadding="0" width="100%">
 <tbody>
 <tr>
@@ -326,11 +325,11 @@ ${getIconsHTML(true)}
 </tr>
 </tbody>
 </table>
-    `;
-  }
+      `;
+    }
 
-  // ----- אנגלית -----
-  return `
+    // ----- אנגלית -----
+    return `
 <table dir="ltr" style="font-family: Arial,sans-serif; font-size: 14px; color: #000; text-align: left; direction: ltr; line-height: 1.6;" cellspacing="0" cellpadding="0" width="100%">
 <tbody>
 <tr>
@@ -371,20 +370,19 @@ ${getIconsHTML(false)}
 </tr>
 </tbody>
 </table>
-  `;
-}
+    `;
+  }
 
-
-useEffect(() => {
-  document.documentElement.setAttribute("dir", "rtl");
-  document.body.style.direction = "rtl";
-  document.body.style.textAlign = "right";
-  return () => {
-    document.documentElement.setAttribute("dir", "ltr");
-    document.body.style.direction = "";
-    document.body.style.textAlign = "";
-  };
-}, []);
+  useEffect(() => {
+    document.documentElement.setAttribute("dir", "rtl");
+    document.body.style.direction = "rtl";
+    document.body.style.textAlign = "right";
+    return () => {
+      document.documentElement.setAttribute("dir", "ltr");
+      document.body.style.direction = "";
+      document.body.style.textAlign = "";
+    };
+  }, []);
 
   // ---- RENDER ----
   return (
@@ -497,19 +495,17 @@ useEffect(() => {
             </div>
           </div>
           <div
-			ref={previewRef}
-			style={{
-				background: "#fff",
-				borderRadius: 10,
-				padding: 18,
-				minHeight: 60,
-				// שינוי היישור בהתאם לשפה
-				textAlign: tab === "he" ? "right" : "left",
-				direction: tab === "he" ? "rtl" : "ltr"
-			}}
-			dangerouslySetInnerHTML={{ __html: buildSignature() }}
-			/>
-			
+            ref={previewRef}
+            style={{
+              background: "#fff",
+              borderRadius: 10,
+              padding: 18,
+              minHeight: 60,
+              textAlign: tab === "he" ? "right" : "left",
+              direction: tab === "he" ? "rtl" : "ltr"
+            }}
+            dangerouslySetInnerHTML={{ __html: buildSignature() }}
+          />
         </div>
       </div>
 
@@ -526,24 +522,19 @@ useEffect(() => {
             <button style={{
               position: "absolute", left: 16, top: 12, fontSize: 18, background: "none", border: "none", color: "#999", cursor: "pointer"
             }} onClick={() => setShowOutlook(false)}>&#10005;</button>
-			<div style={{ display: "flex", alignItems: "center", marginBottom: 16 }}>
-			<img src={ICONS.outlook} alt="Outlook" style={{ width: 34, marginLeft: 7 }} />
-			<span style={{ 
-				fontWeight: 700, 
-				fontSize: "1.16em", 
-				color: "#1a237e"    // כחול כהה
-			}}>
-				הוראות לאאוטלוק
-			</span>
-			</div>
-			<ol style={{ paddingRight: 15, color: "#222", fontSize: "1.08em", direction: "rtl", textAlign: "right" }}>
-			<li>העתק את החתימה באמצעות הכפתור.</li>
-			<li>לחץ על כפתור <b>עבור לאאוטלוק</b> למטה.</li>
-			<li>היכנס ל־אאוטלוק &gt; הגדרות &gt; הצג את כל הגדרות אאוטלוק &gt; דואר &gt; חתימות.</li>
-			<li>הדבק את החתימה בתיבת העריכה.</li>
-			<li>שמור. זהו!</li>
-			</ol>
-
+            <div style={{ display: "flex", alignItems: "center", marginBottom: 16 }}>
+              <img src={ICONS.outlook} alt="Outlook" style={{ width: 34, marginLeft: 7 }} />
+              <span style={{ fontWeight: 700, fontSize: "1.16em", color: "#1a237e" }}>
+                הוראות לאאוטלוק
+              </span>
+            </div>
+            <ol style={{ paddingRight: 15, color: "#222", fontSize: "1.08em", direction: "rtl", textAlign: "right" }}>
+              <li>העתק את החתימה באמצעות הכפתור.</li>
+              <li>לחץ על כפתור <b>עבור לאאוטלוק</b> למטה.</li>
+              <li>היכנס ל־אאוטלוק &gt; הגדרות &gt; הצג את כל הגדרות אאוטלוק &gt; דואר &gt; חתימות.</li>
+              <li>הדבק את החתימה בתיבת העריכה.</li>
+              <li>שמור. זהו!</li>
+            </ol>
             <div style={{ marginTop: 18, display: "flex", justifyContent: "flex-end", gap: 8 }}>
               <button style={smallBtnStyle} onClick={handleCopy}>העתק חתימה</button>
               <a
