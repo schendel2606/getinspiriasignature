@@ -224,7 +224,7 @@ function makeIcon(link, src, alt, align = "left") {
 // ---- BUILD SIGNATURE ----
 function buildSignature() {
   const isHe = tab === "he";
-  const hasLinkedin = showLinkedin && (linkedin || true); // קישור כללי
+  const hasLinkedin = showLinkedin && (linkedin || true);
   const linkedinHref = linkedin || "https://www.linkedin.com/";
   const greetingHTML = showGreeting && greeting
     ? `<div style="margin-bottom:3px; color:#1a237e; font-size:15px;">${greeting}</div>`
@@ -284,11 +284,6 @@ function buildSignature() {
     ).join("");
   }
 
-  const dir = isHe ? "rtl" : "ltr";
-  const align = isHe ? "right" : "left";
-  const tdAlign = align;
-  const tdPadding = isHe ? "padding-bottom: 6px;" : "padding-bottom: 6px;";
-
   if (isHe) {
     return `
 <table dir="rtl" style="font-family: Arial,sans-serif; font-size: 14px; color: #000; text-align: right; direction: rtl; line-height: 1.6;" cellspacing="0" cellpadding="0" width="100%">
@@ -326,7 +321,7 @@ ${showLinkedin ? `<a style="margin-right: 6px; vertical-align: middle;" href="${
 </tr>
 <tr>
 <td align="right" style="padding-bottom: 0;">
-${getIconsRow(iconArrayHe, "right")}
+${getIconsHTML(true)}
 </td>
 </tr>
 </tbody>
@@ -371,13 +366,15 @@ ${showLinkedin ? `<a style="margin-left: 6px; vertical-align: middle;" href="${l
 </tr>
 <tr>
 <td align="left" style="padding-bottom: 0;">
-${getIconsRow(iconArrayEn, "left")}
+${getIconsHTML(false)}
 </td>
 </tr>
 </tbody>
 </table>
   `;
 }
+
+
 useEffect(() => {
   document.documentElement.setAttribute("dir", "rtl");
   document.body.style.direction = "rtl";
