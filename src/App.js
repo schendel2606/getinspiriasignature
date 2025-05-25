@@ -291,6 +291,7 @@ export default function SignatureGenerator() {
       }
     ];
 
+
 /*
     function getIconsHTML(isHe) {
       const icons = isHe ? iconArrayHe : iconArrayEn;
