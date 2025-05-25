@@ -167,6 +167,22 @@ function makeIcon(link, src, alt, align = "left") {
   `;
 }
 
+function getIconsRow(icons, align = "left") {
+  return `
+    <table border="0" cellspacing="0" cellpadding="0" style="border-collapse:collapse;">
+      <tr>
+        ${icons.map(icon => `
+          <td width="32" height="32" align="center" valign="middle" style="padding:0 3px;">
+            <a href="${icon.link}" target="_blank">
+              <img src="${icon.src}" width="32" height="32" alt="${icon.alt}" style="display:block;border:0;outline:none;text-decoration:none;" />
+            </a>
+          </td>
+        `).join('')}
+      </tr>
+    </table>
+  `;
+}
+
 // ---- COMPONENT ----
 export default function SignatureGenerator() {
   const [tab, setTab] = useState("he"); // Hebrew or English
@@ -275,6 +291,7 @@ export default function SignatureGenerator() {
       }
     ];
 
+/*
     function getIconsHTML(isHe) {
       const icons = isHe ? iconArrayHe : iconArrayEn;
       return icons.map((icon, idx) =>
@@ -282,6 +299,8 @@ export default function SignatureGenerator() {
         (idx < icons.length - 1 ? `<span style="display:inline-block;width:6px"></span>` : "")
       ).join("");
     }
+*/
+
 
     if (isHe) {
       return `
@@ -320,7 +339,7 @@ ${showLinkedin ? `<a style="margin-right: 6px; vertical-align: middle;" href="${
 </tr>
 <tr>
 <td align="right" style="padding-bottom: 0;">
-${getIconsHTML(true)}
+${getIconsRow(iconArrayHe, "right")}
 </td>
 </tr>
 </tbody>
@@ -365,7 +384,7 @@ ${showLinkedin ? `<a style="margin-left: 6px; vertical-align: middle;" href="${l
 </tr>
 <tr>
 <td align="left" style="padding-bottom: 0;">
-${getIconsHTML(false)}
+${getIconsRow(iconArrayEn, "left")}
 </td>
 </tr>
 </tbody>
