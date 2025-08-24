@@ -63,6 +63,11 @@ export function SignatureGenerator() {
   const { copyHtml } = useClipboardHtml();
   const previewRef = useRef(null);
 
+  // Create formData object early
+  const formData = {
+    name, role, email, phone, showPhone, ext, showLinkedin, linkedin, showGreeting, greeting, tab
+  };
+
   // Update greeting when tab changes
   useEffect(() => {
     setGreeting(GREETING_DEFAULTS[tab]);
@@ -124,10 +129,6 @@ export function SignatureGenerator() {
   function handleCopy() {
     if (!previewRef.current) return;
     
-    const formData = {
-      name, role, email, phone, showPhone, ext, showLinkedin, linkedin, showGreeting, greeting
-    };
-    
     const validationErrors = validateForm(formData, tab);
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
@@ -179,10 +180,6 @@ export function SignatureGenerator() {
     setTab("he");
     setErrors({});
   }
-
-  const formData = {
-    name, role, email, phone, showPhone, ext, showLinkedin, linkedin, showGreeting, greeting, tab
-  };
 
   const signatureHtml = buildSignatureHtml({
     tab,
