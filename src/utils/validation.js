@@ -10,9 +10,9 @@ export const validateForm = (data, language = 'he') => {
   }
   
   if (!data.email?.trim()) {
-    errors.email = language === "he" ? "כתובת דוא\"ל היא שדה חובה" : "Email is required";
+    errors.email = language === "he" ? "כתובת דוא״ל היא שדה חובה" : "Email is required";
   } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
-    errors.email = language === "he" ? "כתובת דוא\"ל לא תקינה" : "Invalid email address";
+          errors.email = language === "he" ? "כתובת דוא״ל לא תקינה" : "Invalid email address";
   }
   
   if (data.showPhone && data.phone && !/^[\d\s\-\+\(\)]+$/.test(data.phone)) {

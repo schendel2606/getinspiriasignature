@@ -175,7 +175,7 @@ export function SignatureGenerator() {
           <div style={colStyle}>
             <TextField
               id="email"
-              label="כתובת דוא\"ל"
+              label="כתובת דוא״ל"
               value={email}
               onChange={e => {
                 setEmail(e.target.value);
