@@ -4,11 +4,15 @@ import { ToggleField } from "./fields/ToggleField";
 import { TabButtons } from "./fields/TabButtons";
 import { SignaturePreview } from "./SignaturePreview";
 import { OutlookModal } from "./OutlookModal";
+import { AdvancedActions } from "./AdvancedActions";
+import { SuccessNotification } from "./SuccessNotification";
 import { MainBox } from "../Layout/MainBox";
 import { useColorMode } from "../../hooks/useColorMode";
 import { useClipboardHtml } from "../../hooks/useClipboardHtml";
+import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { buildSignatureHtml } from "../../utils/buildSignatureHtml";
 import { validateForm } from "../../utils/validation";
+import { getPresetFromURL } from "../../utils/urlPresets";
 import { GREETING_DEFAULTS } from "../../constants/defaults";
 
 const rowStyle = {
@@ -36,20 +40,24 @@ const modeSelectStyle = {
 };
 
 export function SignatureGenerator() {
-  const [tab, setTab] = useState("he");
-  const [name, setName] = useState("");
-  const [role, setRole] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [showPhone, setShowPhone] = useState(false);
-  const [ext, setExt] = useState("");
-  const [showLinkedin, setShowLinkedin] = useState(false);
-  const [linkedin, setLinkedin] = useState("");
-  const [showGreeting, setShowGreeting] = useState(false);
-  const [greeting, setGreeting] = useState(GREETING_DEFAULTS.he);
+  // Check for URL preset first
+  const urlPreset = getPresetFromURL();
+  
+  const [tab, setTab] = useLocalStorage("signature-tab", urlPreset?.tab || "he");
+  const [name, setName] = useLocalStorage("signature-name", urlPreset?.name || "");
+  const [role, setRole] = useLocalStorage("signature-role", urlPreset?.role || "");
+  const [email, setEmail] = useLocalStorage("signature-email", urlPreset?.email || "");
+  const [phone, setPhone] = useLocalStorage("signature-phone", urlPreset?.phone || "");
+  const [showPhone, setShowPhone] = useLocalStorage("signature-showPhone", urlPreset?.showPhone || false);
+  const [ext, setExt] = useLocalStorage("signature-ext", urlPreset?.ext || "");
+  const [showLinkedin, setShowLinkedin] = useLocalStorage("signature-showLinkedin", urlPreset?.showLinkedin || false);
+  const [linkedin, setLinkedin] = useLocalStorage("signature-linkedin", urlPreset?.linkedin || "");
+  const [showGreeting, setShowGreeting] = useLocalStorage("signature-showGreeting", urlPreset?.showGreeting || false);
+  const [greeting, setGreeting] = useLocalStorage("signature-greeting", urlPreset?.greeting || GREETING_DEFAULTS.he);
   const [showOutlook, setShowOutlook] = useState(false);
   const [errors, setErrors] = useState({});
   const [copyStatus, setCopyStatus] = useState("");
+  const [notification, setNotification] = useState({ message: "", isVisible: false });
 
   const { mode, setMode } = useColorMode();
   const { copyHtml } = useClipboardHtml();
@@ -75,6 +83,39 @@ export function SignatureGenerator() {
       document.body.style.textAlign = "";
     };
   }, []);
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const isBrowser = typeof document !== 'undefined';
+    if (!isBrowser) return;
+
+    function handleKeyDown(event) {
+      // Ctrl+Enter to copy signature
+      if (event.ctrlKey && event.key === 'Enter') {
+        event.preventDefault();
+        handleCopy();
+      }
+      
+      // Ctrl+S to export settings
+      if (event.ctrlKey && event.key === 's') {
+        event.preventDefault();
+        const dataStr = JSON.stringify(formData, null, 2);
+        const dataBlob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(dataBlob);
+        
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'inspiria-signature-settings.json';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [formData]);
 
   function handleModeChange(e) {
     setMode(e.target.value);
@@ -104,6 +145,44 @@ export function SignatureGenerator() {
       setErrors(prev => ({ ...prev, [fieldName]: null }));
     }
   }
+
+  function handleImportData(data) {
+    if (data.name) setName(data.name);
+    if (data.role) setRole(data.role);
+    if (data.email) setEmail(data.email);
+    if (data.phone) setPhone(data.phone);
+    if (data.showPhone !== undefined) setShowPhone(data.showPhone);
+    if (data.ext) setExt(data.ext);
+    if (data.showLinkedin !== undefined) setShowLinkedin(data.showLinkedin);
+    if (data.linkedin) setLinkedin(data.linkedin);
+    if (data.showGreeting !== undefined) setShowGreeting(data.showGreeting);
+    if (data.greeting) setGreeting(data.greeting);
+    if (data.tab) setTab(data.tab);
+    
+    setNotification({
+      message: tab === "he" ? "ההגדרות יובאו בהצלחה!" : "Settings imported successfully!",
+      isVisible: true
+    });
+  }
+
+  function handleReset() {
+    setName("");
+    setRole("");
+    setEmail("");
+    setPhone("");
+    setShowPhone(false);
+    setExt("");
+    setShowLinkedin(false);
+    setLinkedin("");
+    setShowGreeting(false);
+    setGreeting(GREETING_DEFAULTS.he);
+    setTab("he");
+    setErrors({});
+  }
+
+  const formData = {
+    name, role, email, phone, showPhone, ext, showLinkedin, linkedin, showGreeting, greeting, tab
+  };
 
   const signatureHtml = buildSignatureHtml({
     tab,
@@ -261,21 +340,34 @@ export function SignatureGenerator() {
           </div>
         </div>
 
-        <SignaturePreview
-          previewRef={previewRef}
-          signatureHtml={signatureHtml}
-          tab={tab}
-          copyStatus={copyStatus}
-          onCopy={handleCopy}
-          onOutlookClick={() => setShowOutlook(true)}
-        />
-      </MainBox>
+                 <SignaturePreview
+           previewRef={previewRef}
+           signatureHtml={signatureHtml}
+           tab={tab}
+           copyStatus={copyStatus}
+           onCopy={handleCopy}
+           onOutlookClick={() => setShowOutlook(true)}
+         />
 
-      <OutlookModal
-        isOpen={showOutlook}
-        onClose={() => setShowOutlook(false)}
-        onCopy={handleCopy}
-      />
-    </>
-  );
-}
+         <AdvancedActions
+           formData={formData}
+           onImportData={handleImportData}
+           onReset={handleReset}
+           tab={tab}
+         />
+       </MainBox>
+
+             <OutlookModal
+         isOpen={showOutlook}
+         onClose={() => setShowOutlook(false)}
+         onCopy={handleCopy}
+       />
+
+       <SuccessNotification
+         message={notification.message}
+         isVisible={notification.isVisible}
+         onClose={() => setNotification({ message: "", isVisible: false })}
+       />
+     </>
+   );
+ }
