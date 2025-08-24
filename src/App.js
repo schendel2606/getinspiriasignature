@@ -1,19 +1,26 @@
 import React, { useEffect } from "react";
 import { SignatureGenerator } from "./components/SignatureGenerator/SignatureGenerator";
-import { THEME_CSS } from "./styles/themeStyles";
+import "./styles/theme.css";
 
 function App() {
-  // Inject theme styles on mount
   useEffect(() => {
     const isBrowser = typeof document !== 'undefined';
     if (!isBrowser) return;
     
-    if (document.head.querySelector('style[data-inspiria]')) return;
+    // Set entire app to RTL by default
+    document.documentElement.setAttribute("dir", "rtl");
+    document.documentElement.setAttribute("lang", "he");
     
-    const style = document.createElement('style');
-    style.setAttribute('data-inspiria', 'true');
-    style.innerHTML = THEME_CSS;
-    document.head.appendChild(style);
+    // Apply theme class to document.documentElement instead of body
+    const savedTheme = localStorage.getItem('color-mode') || 'system';
+    const applyTheme = (theme) => {
+      document.documentElement.classList.remove('light', 'dark');
+      if (theme !== 'system') {
+        document.documentElement.classList.add(theme);
+      }
+    };
+    
+    applyTheme(savedTheme);
   }, []);
 
   return <SignatureGenerator />;

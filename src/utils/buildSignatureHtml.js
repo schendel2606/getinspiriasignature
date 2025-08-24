@@ -2,7 +2,7 @@ import { ICONS } from '../constants/icons.js';
 
 function getIconsRow(icons, align = "left") {
   return `
-    <table border="0" cellspacing="0" cellpadding="0" style="border-collapse:collapse;">
+    <table border="0" cellspacing="0" cellpadding="0" align="${align}" dir="${align==='right' ? 'rtl' : 'ltr'}" style="border-collapse:collapse;">
       <tr>
         ${icons.map(icon => `
           <td width="32" height="32" align="center" valign="middle" style="padding:0 3px;">

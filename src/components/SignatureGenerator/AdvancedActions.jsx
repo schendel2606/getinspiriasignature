@@ -2,26 +2,6 @@ import React, { useRef } from 'react';
 import { downloadVCard } from '../../utils/vCardGenerator';
 import { generateSharableLink, copyToClipboard } from '../../utils/urlPresets';
 
-const actionBtnStyle = {
-  background: "#f8f9fa",
-  color: "#495057",
-  border: "1px solid #dee2e6",
-  borderRadius: 8,
-  fontWeight: 500,
-  fontSize: "0.9em",
-  padding: "6px 12px",
-  margin: "0 4px",
-  cursor: "pointer",
-  transition: "all 0.2s ease",
-  display: "flex",
-  alignItems: "center",
-  gap: 6
-};
-
-const fileInputStyle = {
-  display: "none"
-};
-
 export function AdvancedActions({ 
   formData, 
   onImportData, 
@@ -75,64 +55,54 @@ export function AdvancedActions({
   };
 
   return (
-    <div style={{ 
-      marginTop: 20, 
-      padding: 16, 
-      background: "#f8f9fa", 
-      borderRadius: 12, 
-      border: "1px solid #e9ecef" 
-    }} className="advanced-actions">
+    <div className="advanced-actions">
       <h3 style={{ 
         margin: "0 0 12px 0", 
         fontSize: "1.1em", 
-        color: "#495057",
+        color: "var(--fg)",
         fontWeight: 600 
       }}>
         {tab === "he" ? "פעולות מתקדמות" : "Advanced Actions"}
       </h3>
       
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }} className="advanced-buttons">
+      <div className="advanced-buttons">
         <button 
-          style={actionBtnStyle} 
+          className="btn advanced-btn" 
           onClick={handleExportJSON}
           title={tab === "he" ? "ייצא הגדרות לקובץ JSON" : "Export settings to JSON"}
-          className="advanced-btn"
         >
           📄 {tab === "he" ? "ייצא הגדרות" : "Export Settings"}
         </button>
         
         <button 
-          style={actionBtnStyle} 
+          className="btn advanced-btn" 
           onClick={() => fileInputRef.current?.click()}
           title={tab === "he" ? "ייבא הגדרות מקובץ JSON" : "Import settings from JSON"}
-          className="advanced-btn"
         >
           📂 {tab === "he" ? "ייבא הגדרות" : "Import Settings"}
         </button>
         
         <button 
-          style={actionBtnStyle} 
+          className="btn advanced-btn" 
           onClick={handleDownloadVCard}
           title={tab === "he" ? "הורד כרטיס ביקור" : "Download vCard"}
-          className="advanced-btn"
         >
           👤 {tab === "he" ? "כרטיס ביקור" : "vCard"}
         </button>
         
         <button 
-          style={actionBtnStyle} 
+          className="btn advanced-btn" 
           onClick={handleCopySharableLink}
           title={tab === "he" ? "העתק קישור לשיתוף" : "Copy sharable link"}
-          className="advanced-btn"
         >
           🔗 {tab === "he" ? "קישור לשיתוף" : "Share Link"}
         </button>
         
         <button 
-          style={{ ...actionBtnStyle, color: "#dc3545", borderColor: "#dc3545" }} 
+          className="btn advanced-btn" 
+          style={{ color: "#dc3545", borderColor: "#dc3545" }}
           onClick={onReset}
           title={tab === "he" ? "אפס לברירת מחדל" : "Reset to defaults"}
-          className="advanced-btn"
         >
           🔄 {tab === "he" ? "אפס" : "Reset"}
         </button>
@@ -143,13 +113,13 @@ export function AdvancedActions({
         type="file"
         accept=".json"
         onChange={handleImportJSON}
-        style={fileInputStyle}
+        style={{ display: "none" }}
       />
       
       <p style={{ 
         margin: "12px 0 0 0", 
         fontSize: "0.85em", 
-        color: "#6c757d",
+        color: "var(--muted)",
         lineHeight: 1.4 
       }}>
         {tab === "he" 

@@ -3,19 +3,6 @@ import React from 'react';
 export function OutlookModal({ isOpen, onClose, onCopy }) {
   if (!isOpen) return null;
 
-  const smallBtnStyle = {
-    background: "#eaf2fa",
-    color: "#2583d1",
-    border: "1px solid #b3d2ef",
-    borderRadius: 9,
-    fontWeight: 600,
-    fontSize: "1em",
-    padding: "7px 19px",
-    margin: "0 7px",
-    cursor: "pointer",
-    transition: "all .16s"
-  };
-
   return (
     <div style={{
       position: "fixed", 
@@ -29,15 +16,7 @@ export function OutlookModal({ isOpen, onClose, onCopy }) {
       alignItems: "center", 
       justifyContent: "center"
     }}>
-      <div style={{
-        background: "#fff", 
-        padding: 28, 
-        borderRadius: 20, 
-        width: 390, 
-        boxShadow: "0 2px 18px #2678ee24",
-        position: "relative", 
-        textAlign: "right"
-      }} className="modal-content">
+      <div className="modal-content">
         <button 
           style={{
             position: "absolute", 
@@ -46,7 +25,7 @@ export function OutlookModal({ isOpen, onClose, onCopy }) {
             fontSize: 18, 
             background: "none", 
             border: "none", 
-            color: "#999", 
+            color: "var(--muted)", 
             cursor: "pointer"
           }} 
           onClick={onClose}
@@ -60,23 +39,22 @@ export function OutlookModal({ isOpen, onClose, onCopy }) {
             alt="Outlook" 
             style={{ width: 34, marginLeft: 7 }} 
           />
-          <span style={{ fontWeight: 700, fontSize: "1.16em", color: "#1a237e" }}>
+          <span style={{ fontWeight: 700, fontSize: "1.16em", color: "var(--primary)" }}>
             הוראות לאאוטלוק
           </span>
         </div>
-        <ol style={{ paddingRight: 15, color: "#222", fontSize: "1.08em", direction: "rtl", textAlign: "right" }}>
+        <ol style={{ paddingRight: 15, color: "var(--fg)", fontSize: "1.08em", direction: "rtl", textAlign: "right" }}>
           <li>העתק את החתימה באמצעות הכפתור.</li>
           <li>לחץ על כפתור <b>עבור לאאוטלוק</b> למטה.</li>
           <li>היכנס ל־אאוטלוק &gt; הגדרות &gt; הצג את כל הגדרות אאוטלוק &gt; דואר &gt; חתימות.</li>
           <li>הדבק את החתימה בתיבת העריכה.</li>
           <li>שמור. זהו!</li>
         </ol>
-        <div style={{ marginTop: 18, display: "flex", justifyContent: "flex-end", gap: 8 }} className="action-buttons">
+        <div className="action-buttons" style={{ marginTop: 18, justifyContent: "flex-end" }}>
           <button 
-            style={smallBtnStyle} 
+            className="btn action-btn" 
             onClick={onCopy}
             aria-label="Copy signature"
-            className="action-btn"
           >
             העתק חתימה
           </button>
@@ -84,9 +62,9 @@ export function OutlookModal({ isOpen, onClose, onCopy }) {
             href="https://outlook.live.com/mail/0/options/mail/layout/signature"
             target="_blank" 
             rel="noopener noreferrer"
-            style={{ ...smallBtnStyle, textDecoration: "none", display: "flex", alignItems: "center" }}
+            className="btn action-btn"
+            style={{ textDecoration: "none", display: "flex", alignItems: "center" }}
             aria-label="Open Outlook settings"
-            className="action-btn"
           >
             <img 
               src="https://img.icons8.com/color/96/microsoft-outlook-2019.png" 

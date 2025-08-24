@@ -8,24 +8,11 @@ export function SignaturePreview({
   onCopy, 
   onOutlookClick 
 }) {
-  const smallBtnStyle = {
-    background: "#eaf2fa",
-    color: "#2583d1",
-    border: "1px solid #b3d2ef",
-    borderRadius: 9,
-    fontWeight: 600,
-    fontSize: "1em",
-    padding: "7px 19px",
-    margin: "0 7px",
-    cursor: "pointer",
-    transition: "all .16s"
-  };
-
   return (
-    <div style={{ marginTop: 30, background: "#f6fafd", borderRadius: 12, padding: 16, minHeight: 60 }} className="signature-preview">
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }} className="preview-header">
-        <span style={{ fontWeight: 700, color: "#1a237e" }}>תצוגה מקדימה</span>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }} className="action-buttons">
+    <div className="signature-preview">
+      <div className="preview-header">
+        <span style={{ fontWeight: 700, color: "var(--primary)" }}>תצוגה מקדימה</span>
+        <div className="action-buttons">
           {copyStatus && (
             <span 
               style={{ 
@@ -39,20 +26,18 @@ export function SignaturePreview({
             </span>
           )}
           <button 
-            style={smallBtnStyle} 
+            className="btn action-btn" 
             onClick={onCopy} 
             type="button"
             aria-label="Copy signature to clipboard"
-            className="action-btn"
           >
             העתק חתימה
           </button>
           <button 
-            style={smallBtnStyle} 
+            className="btn action-btn" 
             type="button" 
             onClick={onOutlookClick}
             aria-label="Open Outlook instructions"
-            className="action-btn"
           >
             <img 
               src="https://img.icons8.com/color/96/microsoft-outlook-2019.png" 
@@ -65,15 +50,9 @@ export function SignaturePreview({
       </div>
       <div
         ref={previewRef}
-        style={{
-          background: "#fff",
-          borderRadius: 10,
-          padding: 18,
-          minHeight: 60,
-          textAlign: tab === "he" ? "right" : "left",
-          direction: tab === "he" ? "rtl" : "ltr"
-        }}
         className="preview-content"
+        dir={tab === "en" ? "ltr" : "rtl"}
+        style={{ textAlign: tab === "en" ? "left" : "right" }}
         dangerouslySetInnerHTML={{ __html: signatureHtml }}
       />
     </div>
