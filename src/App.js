@@ -386,18 +386,6 @@ export default function SignatureGenerator() {
       }
     ];
 
-
-/*
-    function getIconsHTML(isHe) {
-      const icons = isHe ? iconArrayHe : iconArrayEn;
-      return icons.map((icon, idx) =>
-        makeIcon(icon.link, icon.src, icon.alt, isHe ? "right" : "left") +
-        (idx < icons.length - 1 ? `<span style="display:inline-block;width:6px"></span>` : "")
-      ).join("");
-    }
-*/
-
-
     if (isHe) {
       return `
 <table dir="rtl" style="font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #000; text-align: right; direction: rtl; line-height: 1.6; border-collapse: collapse;" cellspacing="0" cellpadding="0" width="100%">
