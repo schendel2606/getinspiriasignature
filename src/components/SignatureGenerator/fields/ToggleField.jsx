@@ -44,8 +44,8 @@ export function ToggleField({
   ...props 
 }) {
   return (
-    <div>
-      <label style={{ ...labelStyle, display: "flex", alignItems: "center" }}>
+    <div className="toggle-field">
+      <label style={{ ...labelStyle, display: "flex", alignItems: "center" }} className="toggle-label">
         <input 
           type="checkbox" 
           checked={checked} 
@@ -66,7 +66,7 @@ export function ToggleField({
         </span>
       </label>
       {children}
-      {error && <div style={errorStyle}>{error}</div>}
+      {error && <div style={errorStyle} className="error-message">{error}</div>}
     </div>
   );
 }

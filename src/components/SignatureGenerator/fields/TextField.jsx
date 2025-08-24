@@ -46,7 +46,7 @@ export function TextField({
         autoComplete={autoComplete}
         {...props}
       />
-      {error && <div style={errorStyle}>{error}</div>}
+      {error && <div style={errorStyle} className="error-message">{error}</div>}
     </div>
   );
 }

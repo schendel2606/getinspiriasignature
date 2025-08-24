@@ -22,10 +22,10 @@ export function SignaturePreview({
   };
 
   return (
-    <div style={{ marginTop: 30, background: "#f6fafd", borderRadius: 12, padding: 16, minHeight: 60 }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+    <div style={{ marginTop: 30, background: "#f6fafd", borderRadius: 12, padding: 16, minHeight: 60 }} className="signature-preview">
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }} className="preview-header">
         <span style={{ fontWeight: 700, color: "#1a237e" }}>תצוגה מקדימה</span>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }} className="action-buttons">
           {copyStatus && (
             <span 
               style={{ 
@@ -43,6 +43,7 @@ export function SignaturePreview({
             onClick={onCopy} 
             type="button"
             aria-label="Copy signature to clipboard"
+            className="action-btn"
           >
             העתק חתימה
           </button>
@@ -51,6 +52,7 @@ export function SignaturePreview({
             type="button" 
             onClick={onOutlookClick}
             aria-label="Open Outlook instructions"
+            className="action-btn"
           >
             <img 
               src="https://img.icons8.com/color/96/microsoft-outlook-2019.png" 
@@ -71,6 +73,7 @@ export function SignaturePreview({
           textAlign: tab === "he" ? "right" : "left",
           direction: tab === "he" ? "rtl" : "ltr"
         }}
+        className="preview-content"
         dangerouslySetInnerHTML={{ __html: signatureHtml }}
       />
     </div>

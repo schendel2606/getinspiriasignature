@@ -81,7 +81,7 @@ export function AdvancedActions({
       background: "#f8f9fa", 
       borderRadius: 12, 
       border: "1px solid #e9ecef" 
-    }}>
+    }} className="advanced-actions">
       <h3 style={{ 
         margin: "0 0 12px 0", 
         fontSize: "1.1em", 
@@ -91,11 +91,12 @@ export function AdvancedActions({
         {tab === "he" ? "פעולות מתקדמות" : "Advanced Actions"}
       </h3>
       
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }} className="advanced-buttons">
         <button 
           style={actionBtnStyle} 
           onClick={handleExportJSON}
           title={tab === "he" ? "ייצא הגדרות לקובץ JSON" : "Export settings to JSON"}
+          className="advanced-btn"
         >
           📄 {tab === "he" ? "ייצא הגדרות" : "Export Settings"}
         </button>
@@ -104,6 +105,7 @@ export function AdvancedActions({
           style={actionBtnStyle} 
           onClick={() => fileInputRef.current?.click()}
           title={tab === "he" ? "ייבא הגדרות מקובץ JSON" : "Import settings from JSON"}
+          className="advanced-btn"
         >
           📂 {tab === "he" ? "ייבא הגדרות" : "Import Settings"}
         </button>
@@ -112,6 +114,7 @@ export function AdvancedActions({
           style={actionBtnStyle} 
           onClick={handleDownloadVCard}
           title={tab === "he" ? "הורד כרטיס ביקור" : "Download vCard"}
+          className="advanced-btn"
         >
           👤 {tab === "he" ? "כרטיס ביקור" : "vCard"}
         </button>
@@ -120,6 +123,7 @@ export function AdvancedActions({
           style={actionBtnStyle} 
           onClick={handleCopySharableLink}
           title={tab === "he" ? "העתק קישור לשיתוף" : "Copy sharable link"}
+          className="advanced-btn"
         >
           🔗 {tab === "he" ? "קישור לשיתוף" : "Share Link"}
         </button>
@@ -128,6 +132,7 @@ export function AdvancedActions({
           style={{ ...actionBtnStyle, color: "#dc3545", borderColor: "#dc3545" }} 
           onClick={onReset}
           title={tab === "he" ? "אפס לברירת מחדל" : "Reset to defaults"}
+          className="advanced-btn"
         >
           🔄 {tab === "he" ? "אפס" : "Reset"}
         </button>

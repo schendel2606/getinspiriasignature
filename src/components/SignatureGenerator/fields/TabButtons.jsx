@@ -16,12 +16,13 @@ const tabBtnStyle = (active) => ({
 
 export function TabButtons({ activeTab, onTabChange }) {
   return (
-    <div style={{ display: "flex", flexDirection: "row", alignItems: "center", marginBottom: 18 }}>
+    <div style={{ display: "flex", flexDirection: "row", alignItems: "center", marginBottom: 18 }} className="tab-buttons">
       <button 
         type="button" 
         style={tabBtnStyle(activeTab === "he")} 
         onClick={() => onTabChange("he")}
         aria-label="Switch to Hebrew"
+        className="tab-btn"
       >
         חתימה בעברית
       </button>
@@ -30,6 +31,7 @@ export function TabButtons({ activeTab, onTabChange }) {
         style={tabBtnStyle(activeTab === "en")} 
         onClick={() => onTabChange("en")}
         aria-label="Switch to English"
+        className="tab-btn"
       >
         חתימה באנגלית
       </button>

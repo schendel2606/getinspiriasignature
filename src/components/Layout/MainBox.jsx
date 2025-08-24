@@ -30,7 +30,7 @@ export function MainBox({ children }) {
       <div style={logoBgStyle}></div>
       
       {/* תיבת תוכן מרכזית */}
-      <div style={mainBoxStyle}>
+      <div style={mainBoxStyle} className="main-box">
         {children}
       </div>
     </div>

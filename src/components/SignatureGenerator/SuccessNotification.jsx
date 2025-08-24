@@ -41,7 +41,7 @@ export function SuccessNotification({ message, isVisible, onClose }) {
   if (!isVisible) return null;
 
   return (
-    <div style={isShowing ? notificationVisibleStyle : notificationStyle}>
+    <div style={isShowing ? notificationVisibleStyle : notificationStyle} className="success-notification">
       ✅ {message}
     </div>
   );

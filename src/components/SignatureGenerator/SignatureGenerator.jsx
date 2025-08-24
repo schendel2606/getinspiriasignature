@@ -197,145 +197,145 @@ export function SignatureGenerator() {
 
   return (
     <>
-      {/* מצב תצוגה – צד ימין */}
-      <div style={modeSelectStyle}>
-        <select value={mode} onChange={handleModeChange}>
-          <option value="dark">🌙 כהה</option>
-          <option value="light">🌞 בהיר</option>
-          <option value="system">🖥️ מערכת</option>
-        </select>
-      </div>
+             {/* מצב תצוגה – צד ימין */}
+       <div style={modeSelectStyle} className="mode-selector">
+         <select value={mode} onChange={handleModeChange}>
+           <option value="dark">🌙 כהה</option>
+           <option value="light">🌞 בהיר</option>
+           <option value="system">🖥️ מערכת</option>
+         </select>
+       </div>
 
-      <MainBox>
-        {/* Header with instructions */}
-        <div style={{ textAlign: "center", marginBottom: 24 }}>
-          <h1 style={{ color: "#1a237e", fontSize: "1.8em", margin: "0 0 8px 0", fontWeight: 700 }}>
-            {tab === "he" ? "יוצר חתימת אימייל אינספיריה" : "Inspiria Email Signature Generator"}
-          </h1>
-          <p style={{ color: "#666", fontSize: "1em", margin: 0 }}>
-            {tab === "he" 
-              ? "מלא את הפרטים שלך וצור חתימת אימייל מקצועית" 
-              : "Fill in your details and create a professional email signature"
-            }
-          </p>
-        </div>
+       <MainBox>
+         {/* Header with instructions */}
+         <div style={{ textAlign: "center", marginBottom: 24 }} className="mobile-header">
+           <h1 style={{ color: "#1a237e", fontSize: "1.8em", margin: "0 0 8px 0", fontWeight: 700 }}>
+             {tab === "he" ? "יוצר חתימת אימייל אינספיריה" : "Inspiria Email Signature Generator"}
+           </h1>
+           <p style={{ color: "#666", fontSize: "1em", margin: 0 }}>
+             {tab === "he" 
+               ? "מלא את הפרטים שלך וצור חתימת אימייל מקצועית" 
+               : "Fill in your details and create a professional email signature"
+             }
+           </p>
+         </div>
 
         <TabButtons activeTab={tab} onTabChange={setTab} />
 
-        {/* Row 1 */}
-        <div style={rowStyle}>
-          <div style={colStyle}>
-            <TextField
-              id="name"
-              label="שם מלא"
-              value={name}
-              onChange={e => {
-                setName(e.target.value);
-                clearError('name');
-              }}
-              error={errors.name}
-            />
-          </div>
-          <div style={colStyle}>
-            <TextField
-              id="role"
-              label="תפקיד"
-              value={role}
-              onChange={e => {
-                setRole(e.target.value);
-                clearError('role');
-              }}
-              error={errors.role}
-            />
-          </div>
-          <div style={colStyle}>
-            <TextField
-              id="email"
-              label="כתובת דוא״ל"
-              value={email}
-              onChange={e => {
-                setEmail(e.target.value);
-                clearError('email');
-              }}
-              type="email"
-              error={errors.email}
-            />
-          </div>
-        </div>
+                 {/* Row 1 */}
+         <div style={rowStyle} className="form-row">
+           <div style={colStyle} className="form-col">
+             <TextField
+               id="name"
+               label="שם מלא"
+               value={name}
+               onChange={e => {
+                 setName(e.target.value);
+                 clearError('name');
+               }}
+               error={errors.name}
+             />
+           </div>
+           <div style={colStyle} className="form-col">
+             <TextField
+               id="role"
+               label="תפקיד"
+               value={role}
+               onChange={e => {
+                 setRole(e.target.value);
+                 clearError('role');
+               }}
+               error={errors.role}
+             />
+           </div>
+           <div style={colStyle} className="form-col">
+             <TextField
+               id="email"
+               label="כתובת דוא״ל"
+               value={email}
+               onChange={e => {
+                 setEmail(e.target.value);
+                 clearError('email');
+               }}
+               type="email"
+               error={errors.email}
+             />
+           </div>
+         </div>
 
-        {/* Row 2 */}
-        <div style={rowStyle}>
-          <div style={{ ...colStyle, flexBasis: 0, flexGrow: 1 }}>
-            <ToggleField
-              label="טלפון נייד"
-              checked={showPhone}
-              onChange={() => setShowPhone(!showPhone)}
-              hintTitle="לא חובה. מלא אם תרצה להוסיף את הטלפון הנייד שלך"
-            >
-              {showPhone && (
-                <TextField
-                  id="phone"
-                  value={phone}
-                  onChange={e => {
-                    setPhone(e.target.value);
-                    clearError('phone');
-                  }}
-                  error={errors.phone}
-                />
-              )}
-            </ToggleField>
-          </div>
-          <div style={{ ...colStyle, flexBasis: 0, flexGrow: 1 }}>
-            <ToggleField
-              label="לינקדין"
-              checked={showLinkedin}
-              onChange={() => setShowLinkedin(!showLinkedin)}
-              showHint={true}
-              hintTitle="לא חובה. קישור לפרופיל הלינקדאין האישי שלך"
-            >
-              {showLinkedin && (
-                <TextField
-                  id="linkedin"
-                  value={linkedin}
-                  onChange={e => {
-                    setLinkedin(e.target.value);
-                    clearError('linkedin');
-                  }}
-                  placeholder="קישור לפרופיל לינקדין"
-                  error={errors.linkedin}
-                />
-              )}
-            </ToggleField>
-          </div>
-        </div>
+                 {/* Row 2 */}
+         <div style={rowStyle} className="form-row">
+           <div style={{ ...colStyle, flexBasis: 0, flexGrow: 1 }} className="form-col toggle-field">
+             <ToggleField
+               label="טלפון נייד"
+               checked={showPhone}
+               onChange={() => setShowPhone(!showPhone)}
+               hintTitle="לא חובה. מלא אם תרצה להוסיף את הטלפון הנייד שלך"
+             >
+               {showPhone && (
+                 <TextField
+                   id="phone"
+                   value={phone}
+                   onChange={e => {
+                     setPhone(e.target.value);
+                     clearError('phone');
+                   }}
+                   error={errors.phone}
+                 />
+               )}
+             </ToggleField>
+           </div>
+           <div style={{ ...colStyle, flexBasis: 0, flexGrow: 1 }} className="form-col toggle-field">
+             <ToggleField
+               label="לינקדין"
+               checked={showLinkedin}
+               onChange={() => setShowLinkedin(!showLinkedin)}
+               showHint={true}
+               hintTitle="לא חובה. קישור לפרופיל הלינקדאין האישי שלך"
+             >
+               {showLinkedin && (
+                 <TextField
+                   id="linkedin"
+                   value={linkedin}
+                   onChange={e => {
+                     setLinkedin(e.target.value);
+                     clearError('linkedin');
+                   }}
+                   placeholder="קישור לפרופיל לינקדין"
+                   error={errors.linkedin}
+                 />
+               )}
+             </ToggleField>
+           </div>
+         </div>
 
-        {/* Row 3 */}
-        <div style={rowStyle}>
-          <div style={{ ...colStyle, maxWidth: 130 }}>
-            <TextField
-              id="ext"
-              label="שלוחה"
-              value={ext}
-              onChange={e => setExt(e.target.value)}
-            />
-          </div>
-          <div style={{ ...colStyle, flex: 2 }}>
-            <ToggleField
-              label="הוסף ברכה"
-              checked={showGreeting}
-              onChange={() => setShowGreeting(!showGreeting)}
-            >
-              {showGreeting && (
-                <TextField
-                  id="greeting"
-                  value={greeting}
-                  onChange={e => setGreeting(e.target.value)}
-                  placeholder={tab === "he" ? "בברכה," : "Best Regards,"}
-                />
-              )}
-            </ToggleField>
-          </div>
-        </div>
+                 {/* Row 3 */}
+         <div style={rowStyle} className="form-row">
+           <div style={{ ...colStyle, maxWidth: 130 }} className="form-col extension-field">
+             <TextField
+               id="ext"
+               label="שלוחה"
+               value={ext}
+               onChange={e => setExt(e.target.value)}
+             />
+           </div>
+           <div style={{ ...colStyle, flex: 2 }} className="form-col greeting-field">
+             <ToggleField
+               label="הוסף ברכה"
+               checked={showGreeting}
+               onChange={() => setShowGreeting(!showGreeting)}
+             >
+               {showGreeting && (
+                 <TextField
+                   id="greeting"
+                   value={greeting}
+                   onChange={e => setGreeting(e.target.value)}
+                   placeholder={tab === "he" ? "בברכה," : "Best Regards,"}
+                 />
+               )}
+             </ToggleField>
+           </div>
+         </div>
 
                  <SignaturePreview
            previewRef={previewRef}

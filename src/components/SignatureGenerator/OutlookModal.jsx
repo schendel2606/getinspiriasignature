@@ -37,7 +37,7 @@ export function OutlookModal({ isOpen, onClose, onCopy }) {
         boxShadow: "0 2px 18px #2678ee24",
         position: "relative", 
         textAlign: "right"
-      }}>
+      }} className="modal-content">
         <button 
           style={{
             position: "absolute", 
@@ -71,11 +71,12 @@ export function OutlookModal({ isOpen, onClose, onCopy }) {
           <li>הדבק את החתימה בתיבת העריכה.</li>
           <li>שמור. זהו!</li>
         </ol>
-        <div style={{ marginTop: 18, display: "flex", justifyContent: "flex-end", gap: 8 }}>
+        <div style={{ marginTop: 18, display: "flex", justifyContent: "flex-end", gap: 8 }} className="action-buttons">
           <button 
             style={smallBtnStyle} 
             onClick={onCopy}
             aria-label="Copy signature"
+            className="action-btn"
           >
             העתק חתימה
           </button>
@@ -85,6 +86,7 @@ export function OutlookModal({ isOpen, onClose, onCopy }) {
             rel="noopener noreferrer"
             style={{ ...smallBtnStyle, textDecoration: "none", display: "flex", alignItems: "center" }}
             aria-label="Open Outlook settings"
+            className="action-btn"
           >
             <img 
               src="https://img.icons8.com/color/96/microsoft-outlook-2019.png" 
