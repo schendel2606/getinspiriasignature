@@ -8,10 +8,10 @@ const ICONS = {
   website: "https://i.postimg.cc/XqvDJXGb/internet.png",
   facebook: "https://i.postimg.cc/9FrnHRHP/facebook.png",
   linkedinCompany: "https://i.postimg.cc/gjBt6d86/linkedin.png",
-  banner: "https://i.postimg.cc/dVq5SbJX/Inspiria-Logo.png",
+  banner: "https://i.postimg.cc/Hx23MMFN/inspiria.png",
   outlook: "https://img.icons8.com/color/96/microsoft-outlook-2019.png"
 };
-const INSPIRIA_LOGO_BG = "https://i.postimg.cc/dVq5SbJX/Inspiria-Logo.png";
+const INSPIRIA_LOGO_BG = "https://i.postimg.cc/Hx23MMFN/inspiria.png";
 
 const GREETING_DEFAULTS = {
   he: "בברכה,",
@@ -72,8 +72,8 @@ const colStyle = { display: "flex", flexDirection: "column", flex: 1, gap: 4 };
 
 const labelStyle = { fontWeight: 500, marginBottom: 3, color: "#1a237e", fontSize: 16 };
 
-const inputStyle = {
-  border: "1.5px solid #bce",
+const inputStyle = (hasError = false) => ({
+  border: hasError ? "1.5px solid #e74c3c" : "1.5px solid #bce",
   borderRadius: 8,
   padding: "10px 10px",
   fontSize: "1.1em",
@@ -81,7 +81,15 @@ const inputStyle = {
   color: "#222",
   outline: "none",
   minWidth: 0,
-  width: "100%"
+  width: "100%",
+  transition: "border-color 0.2s ease"
+});
+
+const errorStyle = {
+  color: "#e74c3c",
+  fontSize: "0.85em",
+  marginTop: 2,
+  fontWeight: 500
 };
 
 const checkStyle = { marginRight: 9, transform: "scale(1.11)" };
@@ -113,6 +121,19 @@ const smallBtnStyle = {
   background: "#eaf2fa",
   color: "#2583d1",
   border: "1px solid #b3d2ef",
+  borderRadius: 9,
+  fontWeight: 600,
+  fontSize: "1em",
+  padding: "7px 19px",
+  margin: "0 7px",
+  cursor: "pointer",
+  transition: "all .16s"
+};
+
+const successBtnStyle = {
+  background: "#d4edda",
+  color: "#155724",
+  border: "1px solid #c3e6cb",
   borderRadius: 9,
   fontWeight: 600,
   fontSize: "1em",
@@ -198,6 +219,7 @@ export default function SignatureGenerator() {
   const [greeting, setGreeting] = useState(GREETING_DEFAULTS.he);
   const [showOutlook, setShowOutlook] = useState(false);
   const [colorMode, setColorMode] = useState(() => localStorage.getItem("color-mode") || "system");
+  const [errors, setErrors] = useState({});
 
   // apply mode on mount + on change
   useEffect(() => {
@@ -218,21 +240,94 @@ export default function SignatureGenerator() {
     setGreeting(GREETING_DEFAULTS[tab]);
   }, [tab]);
 
-  // MAGIC COPY
+  // Form validation
+  const validateForm = () => {
+    const newErrors = {};
+    
+    if (!name.trim()) {
+      newErrors.name = tab === "he" ? "שם מלא הוא שדה חובה" : "Full name is required";
+    }
+    
+    if (!role.trim()) {
+      newErrors.role = tab === "he" ? "תפקיד הוא שדה חובה" : "Role is required";
+    }
+    
+    if (!email.trim()) {
+      newErrors.email = tab === "he" ? "כתובת דוא\"ל היא שדה חובה" : "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      newErrors.email = tab === "he" ? "כתובת דוא\"ל לא תקינה" : "Invalid email address";
+    }
+    
+    if (showPhone && phone && !/^[\d\s\-\+\(\)]+$/.test(phone)) {
+      newErrors.phone = tab === "he" ? "מספר טלפון לא תקין" : "Invalid phone number";
+    }
+    
+    if (showLinkedin && linkedin && !linkedin.includes('linkedin.com')) {
+      newErrors.linkedin = tab === "he" ? "קישור לינקדין לא תקין" : "Invalid LinkedIn URL";
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  // IMPROVED COPY FUNCTIONALITY
   const previewRef = useRef(null);
+  const [copyStatus, setCopyStatus] = useState("");
+  
   function handleCopy() {
     if (!previewRef.current) return;
+    
+    if (!validateForm()) {
+      setCopyStatus(tab === "he" ? "אנא תקן את השגיאות לפני ההעתקה" : "Please fix errors before copying");
+      setTimeout(() => setCopyStatus(""), 3000);
+      return;
+    }
+    
+    // Try modern clipboard API first
+    if (navigator.clipboard && window.isSecureContext) {
+      const htmlContent = previewRef.current.innerHTML;
+      const textContent = previewRef.current.textContent || previewRef.current.innerText;
+      
+      // Create a blob with HTML content for rich text copying
+      const blob = new Blob([htmlContent], { type: 'text/html' });
+      const clipboardItem = new ClipboardItem({
+        'text/html': blob,
+        'text/plain': new Blob([textContent], { type: 'text/plain' })
+      });
+      
+      navigator.clipboard.write([clipboardItem])
+        .then(() => {
+          setCopyStatus(tab === "he" ? "החתימה הועתקה בהצלחה!" : "Signature copied successfully!");
+          setTimeout(() => setCopyStatus(""), 3000);
+        })
+        .catch(() => {
+          // Fallback to old method
+          fallbackCopy();
+        });
+    } else {
+      fallbackCopy();
+    }
+  }
+  
+  function fallbackCopy() {
     const range = document.createRange();
     range.selectNodeContents(previewRef.current);
     const sel = window.getSelection();
     sel.removeAllRanges();
     sel.addRange(range);
     try {
-      document.execCommand("copy");
+      const successful = document.execCommand("copy");
       sel.removeAllRanges();
-      alert(tab === "he" ? "החתימה הועתקה!" : "Signature copied!");
-    } catch {
-      alert(tab === "he" ? "שגיאה בהעתקה!" : "Copy failed!");
+      if (successful) {
+        setCopyStatus(tab === "he" ? "החתימה הועתקה!" : "Signature copied!");
+        setTimeout(() => setCopyStatus(""), 3000);
+      } else {
+        setCopyStatus(tab === "he" ? "שגיאה בהעתקה!" : "Copy failed!");
+        setTimeout(() => setCopyStatus(""), 3000);
+      }
+    } catch (err) {
+      setCopyStatus(tab === "he" ? "שגיאה בהעתקה!" : "Copy failed!");
+      setTimeout(() => setCopyStatus(""), 3000);
     }
   }
 
@@ -305,21 +400,21 @@ export default function SignatureGenerator() {
 
     if (isHe) {
       return `
-<table dir="rtl" style="font-family: Arial,sans-serif; font-size: 14px; color: #000; text-align: right; direction: rtl; line-height: 1.6;" cellspacing="0" cellpadding="0" width="100%">
+<table dir="rtl" style="font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #000; text-align: right; direction: rtl; line-height: 1.6; border-collapse: collapse;" cellspacing="0" cellpadding="0" width="100%">
 <tbody>
 <tr>
-<td style="padding-bottom: 8px;" align="right">
+<td style="padding-bottom: 8px; border: none;" align="right">
 ${greetingHTML}
-<span style="font-size: 17px; font-weight: bold; color: #1a237e;">${name || "שם מלא"}</span>
-${showLinkedin ? `<a style="margin-right: 6px; vertical-align: middle;" href="${linkedinHref}" target="_blank">
+<span style="font-size: 17px; font-weight: bold; color: #1a237e; display: inline-block;">${name || "שם מלא"}</span>
+${showLinkedin ? `<a style="margin-right: 6px; vertical-align: middle; text-decoration: none;" href="${linkedinHref}" target="_blank">
   <img src="${ICONS.linkedin}" width="18" height="18" style="display:inline-block;width:18px;height:18px;border:0;outline:none;text-decoration:none;vertical-align:middle;" alt="LinkedIn אישי" />
 </a>` : ""}
-<div style="color: #0044cc; font-size: 15px;">${role || "תפקיד"}</div>
+<div style="color: #0044cc; font-size: 15px; margin-top: 2px;">${role || "תפקיד"}</div>
 <a style="color: #000; text-decoration: none;" href="mailto:${email}">${email}</a>${showPhone && phone ? ` | <a style="color: #000; text-decoration: none;" href="tel:${phone}">${phone}</a>` : ""}
 </td>
 </tr>
 <tr>
-<td style="padding-bottom: 5px;" align="right">
+<td style="padding-bottom: 5px; border: none;" align="right">
 <span style="vertical-align: middle;">
   <img src="${ICONS.phone}" width="16" height="16" style="display:inline-block;width:16px;height:16px;border:0;outline:none;text-decoration:none;vertical-align:middle;margin-left:4px;" alt="טלפון משרד" />
   03-3743555${ext ? `, שלוחה ${ext}` : ""}
@@ -327,19 +422,19 @@ ${showLinkedin ? `<a style="margin-right: 6px; vertical-align: middle;" href="${
 </td>
 </tr>
 <tr>
-<td style="color:#888; font-size:12px; padding-bottom: 2px;" align="right">
+<td style="color:#888; font-size:12px; padding-bottom: 2px; border: none;" align="right">
 <b>שעות פעילות:</b> ימים א'-ה' 09:00–17:30
 </td>
 </tr>
 <tr>
-<td style="padding-bottom: 6px;" align="right">
-<a href="https://www.inspiria.co.il/" target="_blank">
+<td style="padding-bottom: 6px; border: none;" align="right">
+<a href="https://www.inspiria.co.il/" target="_blank" style="text-decoration: none;">
   <img src="${ICONS.banner}" alt="Inspiria - אינספיריה" width="230" style="display:block; height:auto; border:0; outline:none; margin:0; padding:0;" />
 </a>
 </td>
 </tr>
 <tr>
-<td align="right" style="padding-bottom: 0;">
+<td align="right" style="padding-bottom: 0; border: none;">
 ${getIconsRow(iconArrayHe, "right")}
 </td>
 </tr>
@@ -350,21 +445,21 @@ ${getIconsRow(iconArrayHe, "right")}
 
     // ----- אנגלית -----
     return `
-<table dir="ltr" style="font-family: Arial,sans-serif; font-size: 14px; color: #000; text-align: left; direction: ltr; line-height: 1.6;" cellspacing="0" cellpadding="0" width="100%">
+<table dir="ltr" style="font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #000; text-align: left; direction: ltr; line-height: 1.6; border-collapse: collapse;" cellspacing="0" cellpadding="0" width="100%">
 <tbody>
 <tr>
-<td style="padding-bottom: 8px;" align="left">
+<td style="padding-bottom: 8px; border: none;" align="left">
 ${greetingHTML}
-<span style="font-size: 17px; font-weight: bold; color: #1a237e;">${name || "Full Name"}</span>
-${showLinkedin ? `<a style="margin-left: 6px; vertical-align: middle;" href="${linkedinHref}" target="_blank">
+<span style="font-size: 17px; font-weight: bold; color: #1a237e; display: inline-block;">${name || "Full Name"}</span>
+${showLinkedin ? `<a style="margin-left: 6px; vertical-align: middle; text-decoration: none;" href="${linkedinHref}" target="_blank">
   <img src="${ICONS.linkedin}" width="18" height="18" style="display:inline-block;width:18px;height:18px;border:0;outline:none;text-decoration:none;vertical-align:middle;" alt="Personal LinkedIn" />
 </a>` : ""}
-<div style="color: #0044cc; font-size: 15px;">${role || "Role"}</div>
+<div style="color: #0044cc; font-size: 15px; margin-top: 2px;">${role || "Role"}</div>
 <a style="color: #000; text-decoration: none;" href="mailto:${email}">${email}</a>${showPhone && phone ? ` | <a style="color: #000; text-decoration: none;" href="tel:${phone}">${phone}</a>` : ""}
 </td>
 </tr>
 <tr>
-<td style="padding-bottom: 5px;" align="left">
+<td style="padding-bottom: 5px; border: none;" align="left">
 <span style="vertical-align: middle;">
   <img src="${ICONS.phone}" width="16" height="16" style="display:inline-block;width:16px;height:16px;border:0;outline:none;text-decoration:none;vertical-align:middle;margin-right:4px;" alt="Office Phone" />
   03-3743555${ext ? `, Ext. ${ext}` : ""}
@@ -372,19 +467,19 @@ ${showLinkedin ? `<a style="margin-left: 6px; vertical-align: middle;" href="${l
 </td>
 </tr>
 <tr>
-<td style="color:#888; font-size:12px; padding-bottom: 2px;" align="left">
+<td style="color:#888; font-size:12px; padding-bottom: 2px; border: none;" align="left">
 <b>Working hours:</b> Sun-Thu 09:00–17:30
 </td>
 </tr>
 <tr>
-<td style="padding-bottom: 6px;" align="left">
-<a href="https://www.inspiria.co.il/" target="_blank">
+<td style="padding-bottom: 6px; border: none;" align="left">
+<a href="https://www.inspiria.co.il/" target="_blank" style="text-decoration: none;">
 <img src="${ICONS.banner}" alt="Inspiria Banner" width="210" style="display:block; height:auto; border:0; outline:none;" />
 </a>
 </td>
 </tr>
 <tr>
-<td align="left" style="padding-bottom: 0;">
+<td align="left" style="padding-bottom: 0; border: none;">
 ${getIconsRow(iconArrayEn, "left")}
 </td>
 </tr>
@@ -421,6 +516,19 @@ ${getIconsRow(iconArrayEn, "left")}
 
       {/* תיבת תוכן מרכזית */}
       <div style={mainBoxStyle}>
+        {/* Header with instructions */}
+        <div style={{ textAlign: "center", marginBottom: 24 }}>
+          <h1 style={{ color: "#1a237e", fontSize: "1.8em", margin: "0 0 8px 0", fontWeight: 700 }}>
+            {tab === "he" ? "יוצר חתימת אימייל אינספיריה" : "Inspiria Email Signature Generator"}
+          </h1>
+          <p style={{ color: "#666", fontSize: "1em", margin: 0 }}>
+            {tab === "he" 
+              ? "מלא את הפרטים שלך וצור חתימת אימייל מקצועית" 
+              : "Fill in your details and create a professional email signature"
+            }
+          </p>
+        </div>
+
         <div style={{ display: "flex", flexDirection: "row", alignItems: "center", marginBottom: 18 }}>
           <button type="button" style={tabBtnStyle(tab === "he")} onClick={() => setTab("he")}>חתימה בעברית</button>
           <button type="button" style={tabBtnStyle(tab === "en")} onClick={() => setTab("en")}>חתימה באנגלית</button>
@@ -430,15 +538,43 @@ ${getIconsRow(iconArrayEn, "left")}
         <div style={{ ...rowStyle }}>
           <div style={colStyle}>
             <label style={labelStyle}>שם מלא</label>
-            <input style={inputStyle} value={name} onChange={e => setName(e.target.value)} autoComplete="off" />
+            <input 
+              style={inputStyle(!!errors.name)} 
+              value={name} 
+              onChange={e => {
+                setName(e.target.value);
+                if (errors.name) setErrors(prev => ({ ...prev, name: null }));
+              }} 
+              autoComplete="off" 
+            />
+            {errors.name && <div style={errorStyle}>{errors.name}</div>}
           </div>
           <div style={colStyle}>
             <label style={labelStyle}>תפקיד</label>
-            <input style={inputStyle} value={role} onChange={e => setRole(e.target.value)} autoComplete="off" />
+            <input 
+              style={inputStyle(!!errors.role)} 
+              value={role} 
+              onChange={e => {
+                setRole(e.target.value);
+                if (errors.role) setErrors(prev => ({ ...prev, role: null }));
+              }} 
+              autoComplete="off" 
+            />
+            {errors.role && <div style={errorStyle}>{errors.role}</div>}
           </div>
           <div style={colStyle}>
             <label style={labelStyle}>כתובת דוא"ל</label>
-            <input style={inputStyle} value={email} onChange={e => setEmail(e.target.value)} type="email" autoComplete="off" />
+            <input 
+              style={inputStyle(!!errors.email)} 
+              value={email} 
+              onChange={e => {
+                setEmail(e.target.value);
+                if (errors.email) setErrors(prev => ({ ...prev, email: null }));
+              }} 
+              type="email" 
+              autoComplete="off" 
+            />
+            {errors.email && <div style={errorStyle}>{errors.email}</div>}
           </div>
         </div>
 
@@ -451,8 +587,17 @@ ${getIconsRow(iconArrayEn, "left")}
               <span title="לא חובה. מלא אם תרצה להוסיף את הטלפון הנייד שלך">טלפון נייד</span>
             </label>
             {showPhone && (
-              <input style={inputStyle} value={phone} onChange={e => setPhone(e.target.value)} autoComplete="off" />
+              <input 
+                style={inputStyle(!!errors.phone)} 
+                value={phone} 
+                onChange={e => {
+                  setPhone(e.target.value);
+                  if (errors.phone) setErrors(prev => ({ ...prev, phone: null }));
+                }} 
+                autoComplete="off" 
+              />
             )}
+            {showPhone && errors.phone && <div style={errorStyle}>{errors.phone}</div>}
           </div>
           {/* לינקדין */}
           <div style={{ ...colStyle, flexBasis: 0, flexGrow: 1 }}>
@@ -467,13 +612,17 @@ ${getIconsRow(iconArrayEn, "left")}
             </label>
             {showLinkedin && (
               <input
-                style={inputStyle}
+                style={inputStyle(!!errors.linkedin)}
                 value={linkedin}
-                onChange={e => setLinkedin(e.target.value)}
+                onChange={e => {
+                  setLinkedin(e.target.value);
+                  if (errors.linkedin) setErrors(prev => ({ ...prev, linkedin: null }));
+                }}
                 placeholder="קישור לפרופיל לינקדין"
                 autoComplete="off"
               />
             )}
+            {showLinkedin && errors.linkedin && <div style={errorStyle}>{errors.linkedin}</div>}
           </div>
         </div>
 
@@ -506,7 +655,16 @@ ${getIconsRow(iconArrayEn, "left")}
         <div style={{ marginTop: 30, background: "#f6fafd", borderRadius: 12, padding: 16, minHeight: 60 }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
             <span style={{ fontWeight: 700, color: "#1a237e" }}>תצוגה מקדימה</span>
-            <div>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              {copyStatus && (
+                <span style={{ 
+                  color: copyStatus.includes("שגיאה") || copyStatus.includes("error") ? "#e74c3c" : "#27ae60",
+                  fontSize: "0.9em",
+                  fontWeight: 600
+                }}>
+                  {copyStatus}
+                </span>
+              )}
               <button style={smallBtnStyle} onClick={handleCopy} type="button">העתק חתימה</button>
               <button style={smallBtnStyle} type="button" onClick={() => setShowOutlook(true)}>
                 <img src={ICONS.outlook} alt="Outlook" style={{ width: 19, verticalAlign: "middle", marginLeft: 5, borderRadius: "40%" }} />
